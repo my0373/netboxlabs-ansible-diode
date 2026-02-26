@@ -2,7 +2,7 @@
 # Example: Ingest devices with full attributes into NetBox via Diode.
 #
 # Usage:
-#   ansible-playbook netboxlabs.diode.ingest_devices \
+#   ansible-playbook my0373.diode.ingest_devices \
 #     -e diode_target=grpc://diode.example.com:8080/diode \
 #     -e diode_client_id=YOUR_ID \
 #     -e diode_client_secret=YOUR_SECRET
@@ -19,7 +19,7 @@
 
   tasks:
     - name: Verify Diode SDK is available
-      netboxlabs.diode.diode_info:
+      my0373.diode.diode_info:
       register: sdk_info
 
     - name: Display SDK version
@@ -27,7 +27,7 @@
         msg: "Using Diode SDK v{{ sdk_info.sdk_version }}"
 
     - name: Ingest core switches
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "{{ diode_target }}"
         app_name: "{{ diode_app_name }}"
         app_version: "{{ diode_app_version }}"

@@ -15,20 +15,20 @@ import pytest
 
 class TestDiodeInfoWithSdk:
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_info.HAS_DIODE_SDK",
+        "ansible_collections.my0373.diode.plugins.modules.diode_info.HAS_DIODE_SDK",
         True,
     )
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_info.get_sdk_version",
+        "ansible_collections.my0373.diode.plugins.modules.diode_info.get_sdk_version",
         return_value="1.10.0",
     )
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_info.SUPPORTED_ENTITY_TYPES",
+        "ansible_collections.my0373.diode.plugins.modules.diode_info.SUPPORTED_ENTITY_TYPES",
         ["device", "ip_address", "site"],
     )
     def test_returns_sdk_info(self, mock_version):
         with patch(
-            "ansible_collections.netboxlabs.diode.plugins.modules.diode_info.AnsibleModule"
+            "ansible_collections.my0373.diode.plugins.modules.diode_info.AnsibleModule"
         ) as MockAM:
             mock_instance = MagicMock()
             mock_instance.params = {}
@@ -37,7 +37,7 @@ class TestDiodeInfoWithSdk:
             mock_instance.exit_json.side_effect = SystemExit(0)
 
             with pytest.raises(SystemExit):
-                from ansible_collections.netboxlabs.diode.plugins.modules import (
+                from ansible_collections.my0373.diode.plugins.modules import (
                     diode_info,
                 )
                 diode_info.main()
@@ -54,12 +54,12 @@ class TestDiodeInfoWithSdk:
 
 class TestDiodeInfoWithoutSdk:
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_info.HAS_DIODE_SDK",
+        "ansible_collections.my0373.diode.plugins.modules.diode_info.HAS_DIODE_SDK",
         False,
     )
     def test_reports_sdk_not_installed(self):
         with patch(
-            "ansible_collections.netboxlabs.diode.plugins.modules.diode_info.AnsibleModule"
+            "ansible_collections.my0373.diode.plugins.modules.diode_info.AnsibleModule"
         ) as MockAM:
             mock_instance = MagicMock()
             mock_instance.params = {}
@@ -68,7 +68,7 @@ class TestDiodeInfoWithoutSdk:
             mock_instance.exit_json.side_effect = SystemExit(0)
 
             with pytest.raises(SystemExit):
-                from ansible_collections.netboxlabs.diode.plugins.modules import (
+                from ansible_collections.my0373.diode.plugins.modules import (
                     diode_info,
                 )
                 diode_info.main()
@@ -81,20 +81,20 @@ class TestDiodeInfoWithoutSdk:
 
 class TestDiodeInfoCheckMode:
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_info.HAS_DIODE_SDK",
+        "ansible_collections.my0373.diode.plugins.modules.diode_info.HAS_DIODE_SDK",
         True,
     )
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_info.get_sdk_version",
+        "ansible_collections.my0373.diode.plugins.modules.diode_info.get_sdk_version",
         return_value="1.10.0",
     )
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_info.SUPPORTED_ENTITY_TYPES",
+        "ansible_collections.my0373.diode.plugins.modules.diode_info.SUPPORTED_ENTITY_TYPES",
         ["device"],
     )
     def test_check_mode_is_safe(self, mock_version):
         with patch(
-            "ansible_collections.netboxlabs.diode.plugins.modules.diode_info.AnsibleModule"
+            "ansible_collections.my0373.diode.plugins.modules.diode_info.AnsibleModule"
         ) as MockAM:
             mock_instance = MagicMock()
             mock_instance.params = {}
@@ -103,7 +103,7 @@ class TestDiodeInfoCheckMode:
             mock_instance.exit_json.side_effect = SystemExit(0)
 
             with pytest.raises(SystemExit):
-                from ansible_collections.netboxlabs.diode.plugins.modules import (
+                from ansible_collections.my0373.diode.plugins.modules import (
                     diode_info,
                 )
                 diode_info.main()

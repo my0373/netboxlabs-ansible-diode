@@ -60,7 +60,7 @@
         fail_msg: "Dry run JSON is not a valid object"
 
     - name: Run dry-run in check mode (should not write files)
-      netboxlabs.diode.diode_dry_run:
+      my0373.diode.diode_dry_run:
         app_name: "verify_checkmode"
         output_dir: "{{ dryrun_output_dir }}"
         entities:

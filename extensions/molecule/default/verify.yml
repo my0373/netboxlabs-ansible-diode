@@ -6,7 +6,7 @@
 
   tasks:
     - name: Retrieve Diode SDK information
-      netboxlabs.diode.diode_info:
+      my0373.diode.diode_info:
       register: sdk_info
 
     - name: Assert SDK is installed
@@ -59,7 +59,7 @@
         fail_msg: "diode_info should never report changed"
 
     - name: Ingest a single device in check mode
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "grpc://localhost:8080/diode"
         app_name: "molecule-verify"
         entities:
@@ -81,7 +81,7 @@
         fail_msg: "Single device check mode failed"
 
     - name: Ingest multiple entity types in check mode
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "grpc://localhost:8080/diode"
         app_name: "molecule-verify-multi"
         entities:
@@ -173,7 +173,7 @@
         fail_msg: "Expected 19 entities, got {{ multi_check.ingested_count }}"
 
     - name: Ingest using string shorthand in check mode
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "grpc://localhost:8080/diode"
         app_name: "molecule-verify-shorthand"
         entities:

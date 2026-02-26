@@ -15,7 +15,7 @@
 
   tasks:
     - name: Ingest site hierarchy
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "{{ diode_target }}"
         app_name: "{{ diode_app_name }}"
         entities:

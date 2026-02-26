@@ -31,11 +31,11 @@ def mock_sdk():
         ),
     }):
         import sys
-        mod_name = "ansible_collections.netboxlabs.diode.plugins.module_utils.client"
+        mod_name = "ansible_collections.my0373.diode.plugins.module_utils.client"
         if mod_name in sys.modules:
             del sys.modules[mod_name]
 
-        from ansible_collections.netboxlabs.diode.plugins.module_utils import client
+        from ansible_collections.my0373.diode.plugins.module_utils import client
         client.HAS_DIODE_SDK = True
         client.DiodeClient = mock_diode_client_cls
         client.DiodeDryRunClient = mock_dry_run_client_cls

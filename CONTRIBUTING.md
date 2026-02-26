@@ -63,11 +63,11 @@ Create `plugins/modules/diode_<name>.py` following the existing pattern:
 
 ```python
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.netboxlabs.diode.plugins.module_utils.arg_specs import (
+from ansible_collections.my0373.diode.plugins.module_utils.arg_specs import (
     diode_connection_arg_spec,
     diode_entities_arg_spec,
 )
-from ansible_collections.netboxlabs.diode.plugins.module_utils.diode_module import (
+from ansible_collections.my0373.diode.plugins.module_utils.diode_module import (
     DiodeModule,
 )
 
@@ -93,8 +93,8 @@ Use the doc fragments for shared documentation:
 
 ```yaml
 extends_documentation_fragment:
-  - netboxlabs.diode.common.DIODE_CONNECTION
-  - netboxlabs.diode.common.ENTITIES
+  - my0373.diode.common.DIODE_CONNECTION
+  - my0373.diode.common.ENTITIES
 ```
 
 ### Step 2 — Register in runtime.yml
@@ -132,8 +132,8 @@ Or manually:
 uv venv
 source .venv/bin/activate
 uv pip install ansible-core netboxlabs-diode-sdk pytest pytest-mock molecule
-mkdir -p /tmp/ansible_collections/netboxlabs
-ln -sf "$(pwd)" /tmp/ansible_collections/netboxlabs/diode
+mkdir -p /tmp/ansible_collections/my0373
+ln -sf "$(pwd)" /tmp/ansible_collections/my0373/diode
 ```
 
 ## Running Tests

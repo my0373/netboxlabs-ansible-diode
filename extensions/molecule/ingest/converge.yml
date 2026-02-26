@@ -6,7 +6,7 @@
 
   tasks:
     - name: Verify SDK is available
-      netboxlabs.diode.diode_info:
+      my0373.diode.diode_info:
       register: sdk_info
 
     - name: Assert SDK is ready

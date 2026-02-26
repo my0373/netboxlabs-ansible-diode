@@ -16,14 +16,14 @@ __metaclass__ = type
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.netboxlabs.diode.plugins.module_utils.client import (
+from ansible_collections.my0373.diode.plugins.module_utils.client import (
     HAS_DIODE_SDK,
     SDK_IMPORT_ERROR,
     create_diode_client,
     create_dry_run_client,
     ingest_with_chunking,
 )
-from ansible_collections.netboxlabs.diode.plugins.module_utils.entity_builder import (
+from ansible_collections.my0373.diode.plugins.module_utils.entity_builder import (
     build_entities,
 )
 

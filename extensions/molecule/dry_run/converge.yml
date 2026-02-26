@@ -15,7 +15,7 @@
         mode: "0755"
 
     - name: Dry run - write a single device
-      netboxlabs.diode.diode_dry_run:
+      my0373.diode.diode_dry_run:
         app_name: "molecule_single"
         output_dir: "{{ dryrun_output_dir }}"
         entities:
@@ -29,7 +29,7 @@
               serial: "DRY-001"
 
     - name: Dry run - write multiple entity types
-      netboxlabs.diode.diode_dry_run:
+      my0373.diode.diode_dry_run:
         app_name: "molecule_multi"
         output_dir: "{{ dryrun_output_dir }}"
         entities:
@@ -69,7 +69,7 @@
               name: "DryRun Mfr"
 
     - name: Dry run with request-level metadata
-      netboxlabs.diode.diode_dry_run:
+      my0373.diode.diode_dry_run:
         app_name: "molecule_meta"
         output_dir: "{{ dryrun_output_dir }}"
         entities:

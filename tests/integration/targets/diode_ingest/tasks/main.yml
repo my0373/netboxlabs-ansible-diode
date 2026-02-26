@@ -1,6 +1,6 @@
 ---
 - name: Test diode_info module
-  netboxlabs.diode.diode_info:
+  my0373.diode.diode_info:
   register: info_result
 
 - name: Verify SDK is installed
@@ -11,7 +11,7 @@
     fail_msg: "Diode SDK is not installed or has no entity types"
 
 - name: Test ingesting a single device (check mode)
-  netboxlabs.diode.diode_ingest:
+  my0373.diode.diode_ingest:
     target: "{{ diode_target }}"
     app_name: "{{ diode_app_name }}"
     app_version: "{{ diode_app_version }}"
@@ -34,7 +34,7 @@
     fail_msg: "Check mode did not report expected results"
 
 - name: Test ingesting multiple entity types (check mode)
-  netboxlabs.diode.diode_ingest:
+  my0373.diode.diode_ingest:
     target: "{{ diode_target }}"
     app_name: "{{ diode_app_name }}"
     app_version: "{{ diode_app_version }}"
@@ -75,7 +75,7 @@
     fail_msg: "Multi-entity check mode did not report expected results"
 
 - name: Test ingesting with string shorthand (check mode)
-  netboxlabs.diode.diode_ingest:
+  my0373.diode.diode_ingest:
     target: "{{ diode_target }}"
     app_name: "{{ diode_app_name }}"
     entities:

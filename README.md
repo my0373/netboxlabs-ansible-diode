@@ -11,22 +11,22 @@ An Ansible collection for ingesting network data into [NetBox](https://netbox.de
 
 | Module | Description |
 |--------|-------------|
-| `netboxlabs.diode.diode_ingest` | Ingest entities into NetBox via Diode |
-| `netboxlabs.diode.diode_dry_run` | Write entities to JSON files for review |
-| `netboxlabs.diode.diode_replay` | Replay dry-run JSON files into a live Diode instance |
-| `netboxlabs.diode.diode_info` | Retrieve SDK version and supported entity types |
+| `my0373.diode.diode_ingest` | Ingest entities into NetBox via Diode |
+| `my0373.diode.diode_dry_run` | Write entities to JSON files for review |
+| `my0373.diode.diode_replay` | Replay dry-run JSON files into a live Diode instance |
+| `my0373.diode.diode_info` | Retrieve SDK version and supported entity types |
 
 ## Quick Start
 
 ```bash
 # Install the collection and its Python dependency
-ansible-galaxy collection install netboxlabs.diode
+ansible-galaxy collection install my0373.diode
 pip install netboxlabs-diode-sdk
 ```
 
 ```yaml
 - name: Ingest a device into NetBox
-  netboxlabs.diode.diode_ingest:
+  my0373.diode.diode_ingest:
     target: "grpcs://diode.example.com/diode"
     app_name: "ansible-netbox"
     client_id: "{{ diode_client_id }}"

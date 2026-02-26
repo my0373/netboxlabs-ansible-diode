@@ -14,7 +14,7 @@ This guide walks you through installing the collection, configuring credentials,
 ### 1. Install the collection
 
 ```bash
-ansible-galaxy collection install netboxlabs.diode
+ansible-galaxy collection install my0373.diode
 ```
 
 Or install from a local build:
@@ -23,7 +23,7 @@ Or install from a local build:
 git clone https://github.com/my0373/netboxlabs-ansible-diode.git
 cd netboxlabs-ansible-diode
 ansible-galaxy collection build
-ansible-galaxy collection install netboxlabs-diode-*.tar.gz
+ansible-galaxy collection install my0373-diode-*.tar.gz
 ```
 
 ### 2. Install the Python SDK
@@ -41,7 +41,7 @@ pip install netboxlabs-diode-sdk
   gather_facts: false
   tasks:
     - name: Check Diode SDK
-      netboxlabs.diode.diode_info:
+      my0373.diode.diode_info:
       register: info
 
     - ansible.builtin.debug:
@@ -67,7 +67,7 @@ export DIODE_CLIENT_SECRET="your-client-secret"
 Then reference them in your playbook:
 
 ```yaml
-- netboxlabs.diode.diode_ingest:
+- my0373.diode.diode_ingest:
     target: "{{ lookup('env', 'DIODE_TARGET') }}"
     app_name: "my-app"
     client_id: "{{ lookup('env', 'DIODE_CLIENT_ID') }}"
@@ -92,7 +92,7 @@ vault_diode_client_secret: "your-client-secret"
 Reference them in your playbook:
 
 ```yaml
-- netboxlabs.diode.diode_ingest:
+- my0373.diode.diode_ingest:
     target: "{{ vault_diode_target }}"
     app_name: "my-app"
     client_id: "{{ vault_diode_client_id }}"
@@ -126,7 +126,7 @@ Create a file called `ingest_site.yml`:
 
   tasks:
     - name: Ingest a site and a device
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "{{ lookup('env', 'DIODE_TARGET') }}"
         app_name: "getting-started"
         client_id: "{{ lookup('env', 'DIODE_CLIENT_ID') }}"

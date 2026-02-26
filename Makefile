@@ -3,7 +3,7 @@
 VENV := .venv
 PYTHON := $(CURDIR)/$(VENV)/bin/python
 PYTEST := PYTHONPATH=/tmp:$$PYTHONPATH $(VENV)/bin/pytest
-COLLECTION_PATH := /tmp/ansible_collections/netboxlabs/diode
+COLLECTION_PATH := /tmp/ansible_collections/my0373/diode
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
@@ -12,7 +12,7 @@ help: ## Show this help
 setup: ## Create venv, install deps, create collection symlink
 	uv venv
 	$(VENV)/bin/pip install ansible-core netboxlabs-diode-sdk pytest pytest-mock molecule
-	mkdir -p /tmp/ansible_collections/netboxlabs
+	mkdir -p /tmp/ansible_collections/my0373
 	ln -sf "$$(pwd)" $(COLLECTION_PATH)
 	@echo "\nSetup complete. Run: source $(VENV)/bin/activate"
 

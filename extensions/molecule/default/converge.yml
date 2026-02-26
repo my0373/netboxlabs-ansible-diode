@@ -6,7 +6,7 @@
 
   tasks:
     - name: Retrieve Diode SDK information
-      netboxlabs.diode.diode_info:
+      my0373.diode.diode_info:
       register: sdk_info
 
     - name: Assert SDK is installed
