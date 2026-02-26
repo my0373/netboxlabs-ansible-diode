@@ -41,7 +41,7 @@ jobs:
         run: |
           TAG_VERSION="${GITHUB_REF#refs/tags/v}"
           TAG_MINOR="${TAG_VERSION%.*}"
-          SDK_PIN=$(grep 'my0373-diode-sdk' requirements.txt | head -1)
+          SDK_PIN=$(grep 'netboxlabs-diode-sdk' requirements.txt | head -1)
           echo "SDK pin: ${SDK_PIN}"
           echo "Collection minor: ${TAG_MINOR}"
           if ! echo "${SDK_PIN}" | grep -q "${TAG_MINOR}"; then
@@ -67,7 +67,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install ansible-core my0373-diode-sdk pytest pytest-mock molecule
+          pip install ansible-core netboxlabs-diode-sdk pytest pytest-mock molecule
 
       - name: Create collection symlink
         run: |
@@ -133,7 +133,7 @@ jobs:
 
             ```bash
             ansible-galaxy collection install my0373.diode:==${{ needs.validate.outputs.version }}
-            pip install 'my0373-diode-sdk>=1.10.0,<2.0.0'
+            pip install 'netboxlabs-diode-sdk>=1.10.0,<2.0.0'
             ```
 
             Or install from the attached tarball:
