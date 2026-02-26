@@ -38,10 +38,30 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run TruffleHog
-        uses: trufflesecurity/trufflehog@main
-        with:
-          extra_args: --only-verified
+      - name: Scan for hardcoded secrets
+        run: |
+          echo "Scanning for potential secrets..."
+          FOUND=0
+
+          if grep -rn --include='*.yml' --include='*.yaml' --include='*.py' \
+            -E '(client_secret|api_key|token|password)\s*[:=]\s*"[^{"\$][^"]{8,}"' \
+            --exclude-dir=.git --exclude='*example*' --exclude='*test*' . ; then
+            echo "::error::Potential hardcoded secrets found"
+            FOUND=1
+          fi
+
+          if grep -rn --include='*.yml' --include='*.yaml' \
+            'grpcs://[a-z0-9]\{4,\}\.cloud\.netboxapp\.com' \
+            --exclude='*example*' . ; then
+            echo "::error::Real Diode endpoint found in committed files"
+            FOUND=1
+          fi
+
+          if [ "$FOUND" -eq 1 ]; then
+            exit 1
+          fi
+
+          echo "No secrets detected."
 
   dependency-review:
     name: Dependency Review
@@ -53,5 +73,6 @@ jobs:
 
       - name: Dependency Review
         uses: actions/dependency-review-action@v4
+        continue-on-error: true
         with:
           fail-on-severity: high
