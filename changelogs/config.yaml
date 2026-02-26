@@ -1,0 +1,7 @@
+---
+notesdir: fragments
+changes_file: changelog.yaml
+changes_format: combined
+keep_fragments: false
+changelog_filename_version_depth: 2
+title: NetBox Labs Diode Collection

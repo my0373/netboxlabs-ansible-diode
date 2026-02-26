@@ -1,0 +1,109 @@
+---
+# Example: Bulk ingest entities from a variable file or inventory.
+#
+# Demonstrates reading entity data from variables and ingesting
+# them in batches with automatic chunking.
+#
+# Usage:
+#   ansible-playbook netboxlabs.diode.bulk_ingest \
+#     -e @my_entities.yml \
+#     -e diode_target=grpc://diode.example.com:8080/diode
+#
+- name: Bulk ingest entities into Diode
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    diode_target: "grpc://localhost:8080/diode"
+    diode_app_name: "ansible-bulk-import"
+    diode_chunk_size_mb: 3.0
+
+    # These would typically come from -e @file.yml or group_vars
+    sites:
+      - name: "NYC-DC1"
+        status: "active"
+        facility: "Equinix NY4"
+      - name: "LAX-DC1"
+        status: "active"
+        facility: "Equinix LA1"
+      - name: "ORD-DC1"
+        status: "planned"
+        facility: "Equinix CH1"
+
+    devices:
+      - name: "fw-nyc-01"
+        device_type: "FortiGate 600E"
+        manufacturer: "Fortinet"
+        site: "NYC-DC1"
+        role: "firewall"
+        status: "active"
+      - name: "fw-lax-01"
+        device_type: "FortiGate 600E"
+        manufacturer: "Fortinet"
+        site: "LAX-DC1"
+        role: "firewall"
+        status: "active"
+      - name: "sw-ord-01"
+        device_type: "EX4300"
+        manufacturer: "Juniper"
+        site: "ORD-DC1"
+        role: "access-switch"
+        status: "planned"
+
+    prefixes:
+      - prefix: "10.10.0.0/16"
+        status: "active"
+        site: "NYC-DC1"
+      - prefix: "10.20.0.0/16"
+        status: "active"
+        site: "LAX-DC1"
+      - prefix: "10.30.0.0/16"
+        status: "reserved"
+        site: "ORD-DC1"
+
+  tasks:
+    - name: Build entity list from variables
+      ansible.builtin.set_fact:
+        all_entities: >-
+          {{
+            (sites | map('combine', {'_type': 'site'}) | list) +
+            (devices | map('combine', {'_type': 'device'}) | list) +
+            (prefixes | map('combine', {'_type': 'prefix'}) | list)
+          }}
+
+    - name: Transform to Diode entity format
+      ansible.builtin.set_fact:
+        diode_entities: >-
+          {{
+            all_entities | map('dict2items')
+            | map('rejectattr', 'key', 'equalto', '_type')
+            | map('items2dict')
+            | zip(all_entities | map(attribute='_type'))
+            | map('reverse')
+            | map('list')
+            | map('community.general.dict_kw', keys=['type', 'data'])
+            | list
+          }}
+
+    - name: Display entity count
+      ansible.builtin.debug:
+        msg: "Preparing to ingest {{ diode_entities | length }} entities"
+
+    - name: Ingest all entities with chunking
+      netboxlabs.diode.diode_ingest:
+        target: "{{ diode_target }}"
+        app_name: "{{ diode_app_name }}"
+        entities: "{{ diode_entities }}"
+        chunk_size_mb: "{{ diode_chunk_size_mb }}"
+        metadata:
+          source: "ansible-bulk-import"
+          total_entities: "{{ diode_entities | length }}"
+      register: bulk_result
+
+    - name: Display bulk ingest results
+      ansible.builtin.debug:
+        msg: >-
+          Ingested {{ bulk_result.ingested_count }} entities
+          in {{ bulk_result.chunk_count }} chunk(s).
+          Errors: {{ bulk_result.errors | length }}

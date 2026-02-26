@@ -1,0 +1,17 @@
+---
+- name: Converge - SDK availability
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Verify SDK is available
+      netboxlabs.diode.diode_info:
+      register: sdk_info
+
+    - name: Assert SDK is ready
+      ansible.builtin.assert:
+        that:
+          - sdk_info.sdk_installed is true
+          - sdk_info.entity_type_count > 60
+        fail_msg: "Diode SDK must be installed for ingest tests"

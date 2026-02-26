@@ -1,0 +1,85 @@
+---
+# Example: Ingest devices with full attributes into NetBox via Diode.
+#
+# Usage:
+#   ansible-playbook netboxlabs.diode.ingest_devices \
+#     -e diode_target=grpc://diode.example.com:8080/diode \
+#     -e diode_client_id=YOUR_ID \
+#     -e diode_client_secret=YOUR_SECRET
+#
+- name: Ingest network devices into Diode
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    diode_target: "grpc://localhost:8080/diode"
+    diode_app_name: "ansible-device-import"
+    diode_app_version: "1.0.0"
+
+  tasks:
+    - name: Verify Diode SDK is available
+      netboxlabs.diode.diode_info:
+      register: sdk_info
+
+    - name: Display SDK version
+      ansible.builtin.debug:
+        msg: "Using Diode SDK v{{ sdk_info.sdk_version }}"
+
+    - name: Ingest core switches
+      netboxlabs.diode.diode_ingest:
+        target: "{{ diode_target }}"
+        app_name: "{{ diode_app_name }}"
+        app_version: "{{ diode_app_version }}"
+        client_id: "{{ diode_client_id | default(omit) }}"
+        client_secret: "{{ diode_client_secret | default(omit) }}"
+        entities:
+          - type: device
+            data:
+              name: "core-sw-01"
+              device_type: "Nexus 9300"
+              manufacturer: "Cisco"
+              site: "NYC-DC1"
+              role: "core-switch"
+              status: "active"
+              serial: "FOC12345678"
+              platform: "nxos"
+              tags:
+                - core
+                - production
+                - managed
+
+          - type: device
+            data:
+              name: "core-sw-02"
+              device_type: "Nexus 9300"
+              manufacturer: "Cisco"
+              site: "NYC-DC1"
+              role: "core-switch"
+              status: "active"
+              serial: "FOC12345679"
+              platform: "nxos"
+              tags:
+                - core
+                - production
+                - managed
+
+          - type: device
+            data:
+              name: "access-sw-01"
+              device_type: "Catalyst 9300"
+              manufacturer: "Cisco"
+              site: "NYC-DC1"
+              role: "access-switch"
+              status: "active"
+              serial: "FCW2345678"
+              platform: "ios-xe"
+
+        metadata:
+          source: "ansible-playbook"
+          import_type: "device-provisioning"
+      register: ingest_result
+
+    - name: Display ingestion result
+      ansible.builtin.debug:
+        msg: "Ingested {{ ingest_result.ingested_count }} entities in {{ ingest_result.chunk_count }} chunk(s)"

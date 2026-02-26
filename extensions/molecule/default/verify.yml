@@ -1,0 +1,196 @@
+---
+- name: Verify - SDK info and entity validation
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Retrieve Diode SDK information
+      netboxlabs.diode.diode_info:
+      register: sdk_info
+
+    - name: Assert SDK is installed
+      ansible.builtin.assert:
+        that:
+          - sdk_info.sdk_installed is true
+        fail_msg: "Diode SDK is not installed"
+
+    - name: Assert SDK version is reported
+      ansible.builtin.assert:
+        that:
+          - sdk_info.sdk_version is defined
+          - sdk_info.sdk_version | length > 0
+        fail_msg: "SDK version not reported"
+
+    - name: Assert entity types are available
+      ansible.builtin.assert:
+        that:
+          - sdk_info.entity_type_count > 60
+          - sdk_info.supported_entity_types is iterable
+        fail_msg: "Expected 60+ entity types, got {{ sdk_info.entity_type_count | default(0) }}"
+
+    - name: Assert core entity types are present
+      ansible.builtin.assert:
+        that:
+          - "'device' in sdk_info.supported_entity_types"
+          - "'site' in sdk_info.supported_entity_types"
+          - "'ip_address' in sdk_info.supported_entity_types"
+          - "'prefix' in sdk_info.supported_entity_types"
+          - "'vlan' in sdk_info.supported_entity_types"
+          - "'vrf' in sdk_info.supported_entity_types"
+          - "'interface' in sdk_info.supported_entity_types"
+          - "'rack' in sdk_info.supported_entity_types"
+          - "'manufacturer' in sdk_info.supported_entity_types"
+          - "'platform' in sdk_info.supported_entity_types"
+          - "'tenant' in sdk_info.supported_entity_types"
+          - "'circuit' in sdk_info.supported_entity_types"
+          - "'provider' in sdk_info.supported_entity_types"
+          - "'cluster' in sdk_info.supported_entity_types"
+          - "'virtual_machine' in sdk_info.supported_entity_types"
+          - "'tag' in sdk_info.supported_entity_types"
+          - "'region' in sdk_info.supported_entity_types"
+          - "'location' in sdk_info.supported_entity_types"
+        fail_msg: "Missing core entity types"
+
+    - name: Assert diode_info reports no changes
+      ansible.builtin.assert:
+        that:
+          - sdk_info.changed is false
+        fail_msg: "diode_info should never report changed"
+
+    - name: Ingest a single device in check mode
+      netboxlabs.diode.diode_ingest:
+        target: "grpc://localhost:8080/diode"
+        app_name: "molecule-verify"
+        entities:
+          - type: device
+            data:
+              name: "verify-switch-01"
+              device_type: "Test"
+              site: "Verify-Site"
+              role: "switch"
+              status: "active"
+      check_mode: true
+      register: device_check
+
+    - name: Assert single device check mode succeeds
+      ansible.builtin.assert:
+        that:
+          - device_check.changed is true
+          - device_check.ingested_count == 1
+        fail_msg: "Single device check mode failed"
+
+    - name: Ingest multiple entity types in check mode
+      netboxlabs.diode.diode_ingest:
+        target: "grpc://localhost:8080/diode"
+        app_name: "molecule-verify-multi"
+        entities:
+          - type: site
+            data:
+              name: "Molecule-Site"
+              status: "active"
+          - type: manufacturer
+            data:
+              name: "TestCorp"
+          - type: device_type
+            data:
+              model: "Test-Model-X"
+              manufacturer: "TestCorp"
+          - type: device
+            data:
+              name: "molecule-router-01"
+              device_type: "Test-Model-X"
+              site: "Molecule-Site"
+              role: "router"
+              status: "active"
+          - type: ip_address
+            data:
+              address: "10.99.0.1/24"
+              status: "active"
+          - type: prefix
+            data:
+              prefix: "10.99.0.0/24"
+              status: "active"
+          - type: vlan
+            data:
+              name: "Mgmt"
+              vid: 100
+              status: "active"
+          - type: interface
+            data:
+              name: "GigabitEthernet0/1"
+              device: "molecule-router-01"
+              type: "1000base-t"
+          - type: rack
+            data:
+              name: "MOL-RACK-01"
+              site: "Molecule-Site"
+              status: "active"
+          - type: tenant
+            data:
+              name: "Molecule Tenant"
+          - type: region
+            data:
+              name: "Molecule Region"
+          - type: platform
+            data:
+              name: "molecule-os"
+          - type: cluster_type
+            data:
+              name: "molecule-cluster-type"
+          - type: cluster
+            data:
+              name: "molecule-cluster"
+              type: "molecule-cluster-type"
+          - type: virtual_machine
+            data:
+              name: "molecule-vm-01"
+              cluster: "molecule-cluster"
+              status: "active"
+          - type: provider
+            data:
+              name: "Molecule ISP"
+          - type: circuit_type
+            data:
+              name: "molecule-circuit-type"
+          - type: tag
+            data:
+              name: "molecule-tag"
+          - type: vrf
+            data:
+              name: "molecule-vrf"
+        metadata:
+          test: "molecule-default"
+          scenario: "multi-entity"
+      check_mode: true
+      register: multi_check
+
+    - name: Assert multi-entity check mode reports correct count
+      ansible.builtin.assert:
+        that:
+          - multi_check.changed is true
+          - multi_check.ingested_count == 19
+        fail_msg: "Expected 19 entities, got {{ multi_check.ingested_count }}"
+
+    - name: Ingest using string shorthand in check mode
+      netboxlabs.diode.diode_ingest:
+        target: "grpc://localhost:8080/diode"
+        app_name: "molecule-verify-shorthand"
+        entities:
+          - type: site
+            data: "Shorthand-Site-A"
+          - type: manufacturer
+            data: "Shorthand-Mfr"
+          - type: platform
+            data: "shorthand-os"
+          - type: tag
+            data: "shorthand-tag"
+      check_mode: true
+      register: shorthand_check
+
+    - name: Assert string shorthand check mode works
+      ansible.builtin.assert:
+        that:
+          - shorthand_check.changed is true
+          - shorthand_check.ingested_count == 4
+        fail_msg: "Shorthand check mode failed"

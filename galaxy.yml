@@ -1,0 +1,46 @@
+---
+namespace: netboxlabs
+name: diode
+version: "1.10.0"
+readme: README.md
+authors:
+  - Matt York <my0373@gmail.com>
+  - NetBox Labs <https://netboxlabs.com>
+description: >-
+  Ansible collection for ingesting network data into NetBox via the
+  Diode SDK. Supports all 70+ NetBox entity types including devices,
+  sites, IP addresses, circuits, and more.
+license:
+  - Apache-2.0
+tags:
+  - netbox
+  - diode
+  - network
+  - automation
+  - infrastructure
+  - dcim
+  - ipam
+  - sdk
+repository: https://github.com/netboxlabs/netboxlabs-ansible-diode
+documentation: https://github.com/netboxlabs/netboxlabs-ansible-diode/tree/main/docs
+homepage: https://netboxlabs.com
+issues: https://github.com/netboxlabs/netboxlabs-ansible-diode/issues
+dependencies: {}
+build_ignore:
+  - .git
+  - .github
+  - .venv
+  - .cursor
+  - .claude
+  - "*.tar.gz"
+  - tests
+  - extensions
+  - playbooks
+  - docs
+  - Makefile
+  - CLAUDE.md
+  - claude.md
+  - CODE_OF_CONDUCT.md
+  - SECURITY.md
+  - CONTRIBUTING.md
+  - requirements.txt

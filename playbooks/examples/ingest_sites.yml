@@ -1,0 +1,83 @@
+---
+# Example: Ingest site hierarchy into NetBox via Diode.
+#
+# Demonstrates creating regions, site groups, sites, and locations
+# in a single ingestion call.
+#
+- name: Ingest site hierarchy into Diode
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    diode_target: "grpc://localhost:8080/diode"
+    diode_app_name: "ansible-site-import"
+
+  tasks:
+    - name: Ingest site hierarchy
+      netboxlabs.diode.diode_ingest:
+        target: "{{ diode_target }}"
+        app_name: "{{ diode_app_name }}"
+        entities:
+          - type: region
+            data:
+              name: "North America"
+
+          - type: region
+            data:
+              name: "US East"
+              parent:
+                name: "North America"
+
+          - type: site_group
+            data:
+              name: "Production Data Centers"
+
+          - type: site
+            data:
+              name: "NYC-DC1"
+              status: "active"
+              region: "US East"
+              group:
+                name: "Production Data Centers"
+              facility: "Equinix NY4"
+              description: "Primary East Coast data center"
+              tags:
+                - production
+                - tier-1
+
+          - type: site
+            data:
+              name: "NYC-DC2"
+              status: "planned"
+              region: "US East"
+              group:
+                name: "Production Data Centers"
+              description: "Secondary East Coast data center"
+
+          - type: location
+            data:
+              name: "Floor 1"
+              site: "NYC-DC1"
+              status: "active"
+
+          - type: location
+            data:
+              name: "Floor 2"
+              site: "NYC-DC1"
+              status: "active"
+
+          - type: rack
+            data:
+              name: "NYC-DC1-R01"
+              site: "NYC-DC1"
+              location: "Floor 1"
+              status: "active"
+
+        metadata:
+          source: "ansible-site-provisioning"
+      register: result
+
+    - name: Show result
+      ansible.builtin.debug:
+        var: result

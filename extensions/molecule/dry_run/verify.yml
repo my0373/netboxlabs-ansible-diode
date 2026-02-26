@@ -1,0 +1,106 @@
+---
+- name: Verify - Dry run workflow
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    dryrun_output_dir: "/tmp/molecule-diode-dryrun"
+
+  tasks:
+    - name: Find single dry-run files
+      ansible.builtin.find:
+        paths: "{{ dryrun_output_dir }}"
+        patterns: "molecule_single_*.json"
+      register: single_files
+
+    - name: Assert single dry run produced a file
+      ansible.builtin.assert:
+        that:
+          - single_files.matched == 1
+        fail_msg: "Expected 1 single dry-run file, found {{ single_files.matched }}"
+
+    - name: Find multi dry-run files
+      ansible.builtin.find:
+        paths: "{{ dryrun_output_dir }}"
+        patterns: "molecule_multi_*.json"
+      register: multi_files
+
+    - name: Assert multi dry run produced files
+      ansible.builtin.assert:
+        that:
+          - multi_files.matched >= 1
+        fail_msg: "No multi dry-run files found"
+
+    - name: Find metadata dry-run files
+      ansible.builtin.find:
+        paths: "{{ dryrun_output_dir }}"
+        patterns: "molecule_meta_*.json"
+      register: meta_files
+
+    - name: Assert metadata dry run produced files
+      ansible.builtin.assert:
+        that:
+          - meta_files.matched >= 1
+        fail_msg: "No metadata dry-run files found"
+
+    - name: Read the single dry-run JSON file
+      ansible.builtin.slurp:
+        src: "{{ single_files.files[0].path }}"
+      register: single_json_raw
+
+    - name: Parse single dry-run JSON
+      ansible.builtin.set_fact:
+        single_json: "{{ single_json_raw.content | b64decode | from_json }}"
+
+    - name: Assert dry-run JSON is valid
+      ansible.builtin.assert:
+        that:
+          - single_json is mapping
+        fail_msg: "Dry run JSON is not a valid object"
+
+    - name: Run dry-run in check mode (should not write files)
+      netboxlabs.diode.diode_dry_run:
+        app_name: "verify_checkmode"
+        output_dir: "{{ dryrun_output_dir }}"
+        entities:
+          - type: site
+            data:
+              name: "CheckMode-Site"
+              status: "active"
+      check_mode: true
+      register: check_result
+
+    - name: Assert check mode reports entity count
+      ansible.builtin.assert:
+        that:
+          - check_result.entity_count == 1
+        fail_msg: "Check mode dry run reported wrong values"
+
+    - name: Verify no check-mode files were written
+      ansible.builtin.find:
+        paths: "{{ dryrun_output_dir }}"
+        patterns: "verify_checkmode_*.json"
+      register: checkmode_files
+
+    - name: Assert check mode did not write files
+      ansible.builtin.assert:
+        that:
+          - checkmode_files.matched == 0
+        fail_msg: "Check mode should not write files, found {{ checkmode_files.matched }}"
+
+    - name: Count all dry-run files
+      ansible.builtin.find:
+        paths: "{{ dryrun_output_dir }}"
+        patterns: "*.json"
+      register: all_files
+
+    - name: Assert multiple files exist from all tests
+      ansible.builtin.assert:
+        that:
+          - all_files.matched >= 3
+        fail_msg: "Expected at least 3 dry-run files total, found {{ all_files.matched }}"
+
+    - name: Report file count
+      ansible.builtin.debug:
+        msg: "Verified {{ all_files.matched }} dry-run JSON files in {{ dryrun_output_dir }}"

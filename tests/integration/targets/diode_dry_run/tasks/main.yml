@@ -1,0 +1,59 @@
+---
+- name: Create temporary output directory
+  ansible.builtin.tempfile:
+    state: directory
+    prefix: diode_dryrun_test_
+  register: temp_dir
+
+- name: Test dry run with output directory (check mode)
+  netboxlabs.diode.diode_dry_run:
+    app_name: "integration_test"
+    output_dir: "{{ temp_dir.path }}"
+    entities:
+      - type: device
+        data:
+          name: "dryrun-switch-01"
+          device_type: "Test Switch"
+          site: "DryRun Site"
+          role: "test-role"
+          status: "active"
+      - type: site
+        data:
+          name: "DryRun Site"
+          status: "active"
+  check_mode: true
+  register: dryrun_check
+
+- name: Verify dry run check mode
+  ansible.builtin.assert:
+    that:
+      - dryrun_check.changed
+      - dryrun_check.entity_count == 2
+    fail_msg: "Dry run check mode failed"
+
+- name: Test dry run with metadata (check mode)
+  netboxlabs.diode.diode_dry_run:
+    app_name: "metadata_test"
+    output_dir: "{{ temp_dir.path }}"
+    entities:
+      - type: ip_address
+        data:
+          address: "192.168.1.1/24"
+          status: "active"
+    metadata:
+      batch_id: "test-batch-001"
+      source: "integration-test"
+  check_mode: true
+  register: meta_result
+
+- name: Verify dry run metadata check mode
+  ansible.builtin.assert:
+    that:
+      - meta_result.changed
+      - meta_result.entity_count == 1
+    fail_msg: "Dry run with metadata check mode failed"
+
+- name: Clean up temporary directory
+  ansible.builtin.file:
+    path: "{{ temp_dir.path }}"
+    state: absent

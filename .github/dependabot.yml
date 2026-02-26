@@ -1,0 +1,30 @@
+---
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    reviewers:
+      - my0373
+    labels:
+      - dependencies
+      - automated
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    reviewers:
+      - my0373
+    labels:
+      - ci
+      - automated
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "ci"

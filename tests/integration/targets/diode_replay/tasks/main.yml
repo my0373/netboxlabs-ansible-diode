@@ -1,0 +1,48 @@
+---
+- name: Test replay with missing file
+  netboxlabs.diode.diode_replay:
+    target: "grpc://localhost:8080/diode"
+    app_name: "replay-test"
+    app_version: "1.0.0"
+    files:
+      - "/nonexistent/file.json"
+  register: replay_missing
+  ignore_errors: true
+
+- name: Verify replay fails on missing file
+  ansible.builtin.assert:
+    that:
+      - replay_missing is failed
+      - "'File not found' in replay_missing.msg"
+    fail_msg: "Replay should fail when file does not exist"
+
+- name: Test replay check mode with temporary file
+  block:
+    - name: Create temporary dry-run file
+      ansible.builtin.copy:
+        content: '{"entities": [], "stream": "test"}'
+        dest: "/tmp/diode_replay_test.json"
+        mode: "0644"
+
+    - name: Replay in check mode
+      netboxlabs.diode.diode_replay:
+        target: "grpc://localhost:8080/diode"
+        app_name: "replay-test"
+        app_version: "1.0.0"
+        files:
+          - "/tmp/diode_replay_test.json"
+      check_mode: true
+      register: replay_check
+
+    - name: Verify replay check mode
+      ansible.builtin.assert:
+        that:
+          - replay_check.changed
+          - replay_check.files_processed == 1
+        fail_msg: "Replay check mode failed"
+
+  always:
+    - name: Clean up test file
+      ansible.builtin.file:
+        path: "/tmp/diode_replay_test.json"
+        state: absent

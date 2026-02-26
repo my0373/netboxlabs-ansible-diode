@@ -1,0 +1,283 @@
+---
+- name: Verify - Ingest check mode and error handling
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    # --- Verify DCIM entities ---
+
+    - name: Ingest DCIM entities in check mode
+      netboxlabs.diode.diode_ingest:
+        target: "grpc://localhost:8080/diode"
+        app_name: "mol-verify-dcim"
+        entities:
+          - type: manufacturer
+            data:
+              name: "Verify-Manufacturer"
+          - type: device_type
+            data:
+              model: "Verify-Model"
+              manufacturer: "Verify-Manufacturer"
+          - type: device_role
+            data:
+              name: "verify-role"
+          - type: platform
+            data:
+              name: "verify-platform"
+          - type: device
+            data:
+              name: "verify-device"
+              device_type: "Verify-Model"
+              site: "Verify-Site"
+              role: "verify-role"
+              status: "active"
+      check_mode: true
+      register: dcim_check
+
+    - name: Assert DCIM check mode succeeded
+      ansible.builtin.assert:
+        that:
+          - dcim_check.changed is true
+          - dcim_check.ingested_count == 5
+        fail_msg: "DCIM check expected 5 entities, got {{ dcim_check.ingested_count }}"
+
+    # --- Verify IPAM entities ---
+
+    - name: Ingest IPAM entities in check mode
+      netboxlabs.diode.diode_ingest:
+        target: "grpc://localhost:8080/diode"
+        app_name: "mol-verify-ipam"
+        entities:
+          - type: ip_address
+            data:
+              address: "192.168.100.1/24"
+              status: "active"
+          - type: prefix
+            data:
+              prefix: "192.168.100.0/24"
+              status: "active"
+          - type: vlan
+            data:
+              name: "verify-vlan"
+              vid: 999
+              status: "active"
+          - type: vrf
+            data:
+              name: "verify-vrf"
+          - type: asn
+            data:
+              asn: 65100
+              rir: "verify-rir"
+          - type: rir
+            data:
+              name: "verify-rir"
+          - type: mac_address
+            data:
+              mac_address: "AA:BB:CC:DD:EE:FF"
+      check_mode: true
+      register: ipam_check
+
+    - name: Assert IPAM check mode succeeded
+      ansible.builtin.assert:
+        that:
+          - ipam_check.changed is true
+          - ipam_check.ingested_count == 7
+        fail_msg: "IPAM check expected 7 entities, got {{ ipam_check.ingested_count }}"
+
+    # --- Verify virtualization entities ---
+
+    - name: Ingest virtualization entities in check mode
+      netboxlabs.diode.diode_ingest:
+        target: "grpc://localhost:8080/diode"
+        app_name: "mol-verify-virt"
+        entities:
+          - type: cluster_type
+            data:
+              name: "verify-ct"
+          - type: cluster
+            data:
+              name: "verify-cluster"
+              type: "verify-ct"
+          - type: virtual_machine
+            data:
+              name: "verify-vm"
+              cluster: "verify-cluster"
+              status: "active"
+          - type: vm_interface
+            data:
+              name: "eth0"
+              virtual_machine: "verify-vm"
+          - type: virtual_disk
+            data:
+              name: "disk0"
+              virtual_machine: "verify-vm"
+              size: 100
+      check_mode: true
+      register: virt_check
+
+    - name: Assert virtualization check mode succeeded
+      ansible.builtin.assert:
+        that:
+          - virt_check.changed is true
+          - virt_check.ingested_count == 5
+        fail_msg: "Virt check expected 5 entities, got {{ virt_check.ingested_count }}"
+
+    # --- Verify circuit entities ---
+
+    - name: Ingest circuit entities in check mode
+      netboxlabs.diode.diode_ingest:
+        target: "grpc://localhost:8080/diode"
+        app_name: "mol-verify-circuits"
+        entities:
+          - type: provider
+            data:
+              name: "verify-provider"
+          - type: circuit_type
+            data:
+              name: "verify-ckt-type"
+          - type: circuit
+            data:
+              cid: "VER-CKT-001"
+              provider: "verify-provider"
+              type: "verify-ckt-type"
+        metadata:
+          category: "circuits"
+      check_mode: true
+      register: circuits_check
+
+    - name: Assert circuits check mode succeeded
+      ansible.builtin.assert:
+        that:
+          - circuits_check.changed is true
+          - circuits_check.ingested_count == 3
+        fail_msg: "Circuits check expected 3 entities, got {{ circuits_check.ingested_count }}"
+
+    # --- Verify VPN entities ---
+
+    - name: Ingest VPN entities in check mode
+      netboxlabs.diode.diode_ingest:
+        target: "grpc://localhost:8080/diode"
+        app_name: "mol-verify-vpn"
+        entities:
+          - type: tunnel
+            data:
+              name: "verify-tunnel"
+              status: "active"
+          - type: ike_proposal
+            data:
+              name: "verify-ike"
+          - type: ip_sec_proposal
+            data:
+              name: "verify-ipsec"
+          - type: l2vpn
+            data:
+              name: "verify-l2vpn"
+      check_mode: true
+      register: vpn_check
+
+    - name: Assert VPN check mode succeeded
+      ansible.builtin.assert:
+        that:
+          - vpn_check.changed is true
+          - vpn_check.ingested_count == 4
+        fail_msg: "VPN check expected 4 entities, got {{ vpn_check.ingested_count }}"
+
+    # --- Verify wireless entities ---
+
+    - name: Ingest wireless entities in check mode
+      netboxlabs.diode.diode_ingest:
+        target: "grpc://localhost:8080/diode"
+        app_name: "mol-verify-wireless"
+        entities:
+          - type: wireless_lan_group
+            data:
+              name: "verify-wlan-group"
+          - type: wireless_lan
+            data:
+              ssid: "verify-wifi"
+      check_mode: true
+      register: wireless_check
+
+    - name: Assert wireless check mode succeeded
+      ansible.builtin.assert:
+        that:
+          - wireless_check.changed is true
+          - wireless_check.ingested_count == 2
+        fail_msg: "Wireless check expected 2 entities, got {{ wireless_check.ingested_count }}"
+
+    # --- Verify error handling ---
+
+    - name: Ingest with invalid entity type should fail
+      netboxlabs.diode.diode_ingest:
+        target: "grpc://localhost:8080/diode"
+        app_name: "mol-verify-error"
+        entities:
+          - type: nonexistent_type
+            data:
+              name: "will-fail"
+      register: invalid_type_result
+      ignore_errors: true
+
+    - name: Assert invalid entity type causes failure
+      ansible.builtin.assert:
+        that:
+          - invalid_type_result is failed
+          - "'nonexistent_type' in invalid_type_result.msg or 'Unknown entity type' in invalid_type_result.msg"
+        fail_msg: "Invalid entity type should fail with descriptive error"
+
+    - name: Ingest with missing entity type should fail
+      netboxlabs.diode.diode_ingest:
+        target: "grpc://localhost:8080/diode"
+        app_name: "mol-verify-error"
+        entities:
+          - data:
+              name: "no-type"
+      register: missing_type_result
+      ignore_errors: true
+
+    - name: Assert missing type field causes failure
+      ansible.builtin.assert:
+        that:
+          - missing_type_result is failed
+        fail_msg: "Missing entity type should have failed"
+
+    - name: Replay with missing file should fail
+      netboxlabs.diode.diode_replay:
+        target: "grpc://localhost:8080/diode"
+        app_name: "mol-verify-error"
+        files:
+          - "/nonexistent/path/to/file.json"
+      register: replay_missing_result
+      ignore_errors: true
+
+    - name: Assert replay with missing file causes failure
+      ansible.builtin.assert:
+        that:
+          - replay_missing_result is failed
+          - "'File not found' in replay_missing_result.msg"
+        fail_msg: "Replay with missing file should fail with 'File not found'"
+
+    # --- Summary ---
+
+    - name: Calculate total entity types tested
+      ansible.builtin.set_fact:
+        total_entities: >-
+          {{
+            dcim_check.ingested_count | int +
+            ipam_check.ingested_count | int +
+            virt_check.ingested_count | int +
+            circuits_check.ingested_count | int +
+            vpn_check.ingested_count | int +
+            wireless_check.ingested_count | int
+          }}
+
+    - name: Report coverage
+      ansible.builtin.debug:
+        msg: "Molecule ingest scenario verified {{ total_entities }} entities across 6 categories plus 3 error cases"
+
+    - name: Assert comprehensive coverage
+      ansible.builtin.assert:
+        that:
+          - total_entities | int >= 25
+        fail_msg: "Expected at least 25 entities tested, got {{ total_entities }}"

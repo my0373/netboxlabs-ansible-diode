@@ -1,0 +1,26 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: default
+platforms:
+  - name: localhost
+    managed: false
+    module: ansible.builtin.raw
+provisioner:
+  name: ansible
+  env:
+    ANSIBLE_COLLECTIONS_PATH: "/tmp"
+  inventory:
+    host_vars:
+      localhost:
+        ansible_python_interpreter: "${MOLECULE_PROJECT_DIRECTORY}/.venv/bin/python"
+verifier:
+  name: ansible
+scenario:
+  name: default
+  test_sequence:
+    - dependency
+    - syntax
+    - converge
+    - verify

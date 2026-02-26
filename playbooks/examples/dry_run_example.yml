@@ -1,0 +1,102 @@
+---
+# Example: Dry-run and replay workflow.
+#
+# Step 1: Generate dry-run JSON files for review.
+# Step 2: (Manual) Review the generated files.
+# Step 3: Replay the approved files into a live Diode instance.
+#
+- name: "Step 1: Generate dry-run output"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    dryrun_output_dir: "/tmp/diode-dryrun"
+
+  tasks:
+    - name: Ensure output directory exists
+      ansible.builtin.file:
+        path: "{{ dryrun_output_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Write entities to dry-run files
+      netboxlabs.diode.diode_dry_run:
+        app_name: "network_audit"
+        output_dir: "{{ dryrun_output_dir }}"
+        entities:
+          - type: device
+            data:
+              name: "audit-sw-01"
+              device_type: "Catalyst 9200"
+              site: "LAX-DC1"
+              role: "access-switch"
+              status: "active"
+              serial: "FCW9876543"
+
+          - type: ip_address
+            data:
+              address: "172.16.0.1/24"
+              status: "active"
+
+          - type: vlan
+            data:
+              name: "Management"
+              vid: 100
+              site: "LAX-DC1"
+              status: "active"
+
+        metadata:
+          audit_id: "AUDIT-2026-001"
+          auditor: "ansible-automation"
+      register: dryrun_result
+
+    - name: Display dry-run result
+      ansible.builtin.debug:
+        msg: "Wrote {{ dryrun_result.entity_count }} entities to {{ dryrun_output_dir }}"
+
+    - name: List generated files
+      ansible.builtin.find:
+        paths: "{{ dryrun_output_dir }}"
+        patterns: "*.json"
+      register: dryrun_files
+
+    - name: Show generated files
+      ansible.builtin.debug:
+        msg: "{{ item.path }}"
+      loop: "{{ dryrun_files.files }}"
+      loop_control:
+        label: "{{ item.path | basename }}"
+
+
+- name: "Step 3: Replay approved files"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    diode_target: "grpc://localhost:8080/diode"
+    dryrun_output_dir: "/tmp/diode-dryrun"
+
+  tasks:
+    - name: Find dry-run files to replay
+      ansible.builtin.find:
+        paths: "{{ dryrun_output_dir }}"
+        patterns: "*.json"
+      register: replay_files
+
+    - name: Replay dry-run files into Diode
+      netboxlabs.diode.diode_replay:
+        target: "{{ diode_target }}"
+        app_name: "ansible-replay"
+        app_version: "1.0.0"
+        files: "{{ replay_files.files | map(attribute='path') | list }}"
+      register: replay_result
+      when: replay_files.files | length > 0
+
+    - name: Display replay result
+      ansible.builtin.debug:
+        msg: >-
+          Replayed {{ replay_result.total_ingested }} entities
+          from {{ replay_result.files_processed }} file(s)
+      when: replay_result is not skipped

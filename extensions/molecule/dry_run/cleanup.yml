@@ -1,0 +1,11 @@
+---
+- name: Cleanup - Remove dry run output
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Remove dry run output directory
+      ansible.builtin.file:
+        path: "/tmp/molecule-diode-dryrun"
+        state: absent

@@ -1,0 +1,9 @@
+---
+requires_ansible: ">=2.15.0"
+
+action_groups:
+  diode:
+    - diode_ingest
+    - diode_dry_run
+    - diode_replay
+    - diode_info

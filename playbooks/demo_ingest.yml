@@ -1,0 +1,521 @@
+---
+- name: Demo - Ingest network infrastructure into NetBox via Diode
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    # Credentials: copy credentials.yml.example to credentials.yml,
+    # or export DIODE_TARGET / DIODE_CLIENT_ID / DIODE_CLIENT_SECRET
+    # as environment variables.
+    diode_target: "{{ lookup('env', 'DIODE_TARGET') | default(diode_target, true) }}"
+    diode_client_id: "{{ lookup('env', 'DIODE_CLIENT_ID') | default(diode_client_id, true) }}"
+    diode_client_secret: "{{ lookup('env', 'DIODE_CLIENT_SECRET') | default(diode_client_secret, true) }}"
+    app_name: "ansible-diode-demo"
+    app_version: "1.0.0"
+
+  tasks:
+    # --- Step 1: Verify SDK is available ---
+
+    - name: Check Diode SDK availability
+      netboxlabs.diode.diode_info:
+      register: sdk_info
+
+    - name: Display SDK version
+      ansible.builtin.debug:
+        msg: "Diode SDK v{{ sdk_info.sdk_version }} — {{ sdk_info.entity_type_count }} entity types supported"
+
+    # --- Step 2: Ingest sites, regions, and locations ---
+
+    - name: Create site hierarchy
+      netboxlabs.diode.diode_ingest:
+        target: "{{ diode_target }}"
+        app_name: "{{ app_name }}"
+        app_version: "{{ app_version }}"
+        client_id: "{{ diode_client_id }}"
+        client_secret: "{{ diode_client_secret }}"
+        entities:
+          - type: region
+            data:
+              name: "Europe"
+          - type: region
+            data:
+              name: "North America"
+          - type: site_group
+            data:
+              name: "Production Data Centers"
+          - type: site
+            data:
+              name: "London DC1"
+              status: "active"
+              region: "Europe"
+              group: "Production Data Centers"
+              description: "Primary London data center"
+              tags:
+                - production
+                - tier-1
+          - type: site
+            data:
+              name: "New York DC1"
+              status: "active"
+              region: "North America"
+              group: "Production Data Centers"
+              description: "Primary New York data center"
+              tags:
+                - production
+                - tier-1
+          - type: location
+            data:
+              name: "Server Hall A"
+              site: "London DC1"
+              status: "active"
+          - type: location
+            data:
+              name: "Network Room B"
+              site: "London DC1"
+              status: "active"
+        metadata:
+          source: "ansible-demo"
+          category: "site-hierarchy"
+      register: sites_result
+
+    - name: Report site ingestion
+      ansible.builtin.debug:
+        msg: "Ingested {{ sites_result.ingested_count }} site/region/location entities"
+
+    # --- Step 3: Ingest manufacturers, platforms, and device types ---
+
+    - name: Create device ecosystem
+      netboxlabs.diode.diode_ingest:
+        target: "{{ diode_target }}"
+        app_name: "{{ app_name }}"
+        app_version: "{{ app_version }}"
+        client_id: "{{ diode_client_id }}"
+        client_secret: "{{ diode_client_secret }}"
+        entities:
+          - type: manufacturer
+            data:
+              name: "Cisco"
+          - type: manufacturer
+            data:
+              name: "Arista"
+          - type: manufacturer
+            data:
+              name: "Juniper"
+          - type: platform
+            data:
+              name: "IOS-XE"
+              manufacturer: "Cisco"
+          - type: platform
+            data:
+              name: "EOS"
+              manufacturer: "Arista"
+          - type: platform
+            data:
+              name: "Junos"
+              manufacturer: "Juniper"
+          - type: device_type
+            data:
+              model: "Catalyst 9300-48P"
+              manufacturer: "Cisco"
+          - type: device_type
+            data:
+              model: "DCS-7050SX3-48YC12"
+              manufacturer: "Arista"
+          - type: device_type
+            data:
+              model: "QFX5120-48Y"
+              manufacturer: "Juniper"
+          - type: device_role
+            data:
+              name: "spine-switch"
+          - type: device_role
+            data:
+              name: "leaf-switch"
+          - type: device_role
+            data:
+              name: "firewall"
+        metadata:
+          source: "ansible-demo"
+          category: "device-ecosystem"
+      register: ecosystem_result
+
+    - name: Report ecosystem ingestion
+      ansible.builtin.debug:
+        msg: "Ingested {{ ecosystem_result.ingested_count }} manufacturer/platform/device-type entities"
+
+    # --- Step 4: Ingest racks ---
+
+    - name: Create racks
+      netboxlabs.diode.diode_ingest:
+        target: "{{ diode_target }}"
+        app_name: "{{ app_name }}"
+        app_version: "{{ app_version }}"
+        client_id: "{{ diode_client_id }}"
+        client_secret: "{{ diode_client_secret }}"
+        entities:
+          - type: rack
+            data:
+              name: "LON-DC1-A01"
+              site: "London DC1"
+              status: "active"
+              tags:
+                - production
+          - type: rack
+            data:
+              name: "LON-DC1-A02"
+              site: "London DC1"
+              status: "active"
+          - type: rack
+            data:
+              name: "NYC-DC1-B01"
+              site: "New York DC1"
+              status: "active"
+              tags:
+                - production
+
+    # --- Step 5: Ingest devices ---
+
+    - name: Create network devices
+      netboxlabs.diode.diode_ingest:
+        target: "{{ diode_target }}"
+        app_name: "{{ app_name }}"
+        app_version: "{{ app_version }}"
+        client_id: "{{ diode_client_id }}"
+        client_secret: "{{ diode_client_secret }}"
+        entities:
+          - type: device
+            data:
+              name: "lon-dc1-spine-01"
+              device_type: "DCS-7050SX3-48YC12"
+              site: "London DC1"
+              role: "spine-switch"
+              platform: "EOS"
+              status: "active"
+              serial: "ARN78412301"
+              tags:
+                - production
+                - spine
+          - type: device
+            data:
+              name: "lon-dc1-spine-02"
+              device_type: "DCS-7050SX3-48YC12"
+              site: "London DC1"
+              role: "spine-switch"
+              platform: "EOS"
+              status: "active"
+              serial: "ARN78412302"
+              tags:
+                - production
+                - spine
+          - type: device
+            data:
+              name: "lon-dc1-leaf-01"
+              device_type: "Catalyst 9300-48P"
+              site: "London DC1"
+              role: "leaf-switch"
+              platform: "IOS-XE"
+              status: "active"
+              serial: "FCW2345L0A1"
+              tags:
+                - production
+                - leaf
+          - type: device
+            data:
+              name: "lon-dc1-leaf-02"
+              device_type: "Catalyst 9300-48P"
+              site: "London DC1"
+              role: "leaf-switch"
+              platform: "IOS-XE"
+              status: "active"
+              serial: "FCW2345L0A2"
+              tags:
+                - production
+                - leaf
+          - type: device
+            data:
+              name: "nyc-dc1-spine-01"
+              device_type: "QFX5120-48Y"
+              site: "New York DC1"
+              role: "spine-switch"
+              platform: "Junos"
+              status: "active"
+              serial: "JN1234560A"
+              tags:
+                - production
+                - spine
+          - type: device
+            data:
+              name: "nyc-dc1-leaf-01"
+              device_type: "QFX5120-48Y"
+              site: "New York DC1"
+              role: "leaf-switch"
+              platform: "Junos"
+              status: "active"
+              serial: "JN1234560B"
+              tags:
+                - production
+                - leaf
+        metadata:
+          source: "ansible-demo"
+          category: "devices"
+      register: devices_result
+
+    - name: Report device ingestion
+      ansible.builtin.debug:
+        msg: "Ingested {{ devices_result.ingested_count }} devices"
+
+    # --- Step 6: Ingest interfaces ---
+
+    - name: Create device interfaces
+      netboxlabs.diode.diode_ingest:
+        target: "{{ diode_target }}"
+        app_name: "{{ app_name }}"
+        app_version: "{{ app_version }}"
+        client_id: "{{ diode_client_id }}"
+        client_secret: "{{ diode_client_secret }}"
+        entities:
+          - type: interface
+            data:
+              name: "Ethernet1"
+              device: "lon-dc1-spine-01"
+              type: "100gbase-x-qsfp28"
+              description: "Uplink to lon-dc1-leaf-01"
+          - type: interface
+            data:
+              name: "Ethernet2"
+              device: "lon-dc1-spine-01"
+              type: "100gbase-x-qsfp28"
+              description: "Uplink to lon-dc1-leaf-02"
+          - type: interface
+            data:
+              name: "Management1"
+              device: "lon-dc1-spine-01"
+              type: "1000base-t"
+              description: "Out-of-band management"
+          - type: interface
+            data:
+              name: "Ethernet49/1"
+              device: "lon-dc1-leaf-01"
+              type: "100gbase-x-qsfp28"
+              description: "Uplink to lon-dc1-spine-01"
+          - type: interface
+            data:
+              name: "GigabitEthernet1/0/1"
+              device: "lon-dc1-leaf-01"
+              type: "1000base-t"
+              description: "Server port"
+          - type: interface
+            data:
+              name: "GigabitEthernet1/0/2"
+              device: "lon-dc1-leaf-01"
+              type: "1000base-t"
+              description: "Server port"
+          - type: interface
+            data:
+              name: "et-0/0/0"
+              device: "nyc-dc1-spine-01"
+              type: "100gbase-x-qsfp28"
+              description: "Uplink to nyc-dc1-leaf-01"
+          - type: interface
+            data:
+              name: "et-0/0/0"
+              device: "nyc-dc1-leaf-01"
+              type: "100gbase-x-qsfp28"
+              description: "Uplink to nyc-dc1-spine-01"
+        metadata:
+          source: "ansible-demo"
+          category: "interfaces"
+      register: interfaces_result
+
+    - name: Report interface ingestion
+      ansible.builtin.debug:
+        msg: "Ingested {{ interfaces_result.ingested_count }} interfaces"
+
+    # --- Step 7: Ingest IP addressing ---
+
+    - name: Create IP addressing
+      netboxlabs.diode.diode_ingest:
+        target: "{{ diode_target }}"
+        app_name: "{{ app_name }}"
+        app_version: "{{ app_version }}"
+        client_id: "{{ diode_client_id }}"
+        client_secret: "{{ diode_client_secret }}"
+        entities:
+          - type: vrf
+            data:
+              name: "MGMT"
+              description: "Management VRF"
+          - type: prefix
+            data:
+              prefix: "10.1.0.0/16"
+              status: "active"
+              scope_site: "London DC1"
+              description: "London DC1 supernet"
+          - type: prefix
+            data:
+              prefix: "10.2.0.0/16"
+              status: "active"
+              scope_site: "New York DC1"
+              description: "NYC DC1 supernet"
+          - type: prefix
+            data:
+              prefix: "10.1.255.0/24"
+              status: "active"
+              scope_site: "London DC1"
+              vrf: "MGMT"
+              description: "London management subnet"
+          - type: prefix
+            data:
+              prefix: "10.2.255.0/24"
+              status: "active"
+              scope_site: "New York DC1"
+              vrf: "MGMT"
+              description: "NYC management subnet"
+          - type: ip_address
+            data:
+              address: "10.1.255.1/24"
+              status: "active"
+              description: "lon-dc1-spine-01 mgmt"
+          - type: ip_address
+            data:
+              address: "10.1.255.2/24"
+              status: "active"
+              description: "lon-dc1-spine-02 mgmt"
+          - type: ip_address
+            data:
+              address: "10.1.255.3/24"
+              status: "active"
+              description: "lon-dc1-leaf-01 mgmt"
+          - type: ip_address
+            data:
+              address: "10.1.255.4/24"
+              status: "active"
+              description: "lon-dc1-leaf-02 mgmt"
+          - type: ip_address
+            data:
+              address: "10.2.255.1/24"
+              status: "active"
+              description: "nyc-dc1-spine-01 mgmt"
+          - type: ip_address
+            data:
+              address: "10.2.255.2/24"
+              status: "active"
+              description: "nyc-dc1-leaf-01 mgmt"
+        metadata:
+          source: "ansible-demo"
+          category: "ip-addressing"
+      register: ip_result
+
+    - name: Report IP ingestion
+      ansible.builtin.debug:
+        msg: "Ingested {{ ip_result.ingested_count }} IP/prefix/VRF entities"
+
+    # --- Step 8: Ingest VLANs ---
+
+    - name: Create VLANs
+      netboxlabs.diode.diode_ingest:
+        target: "{{ diode_target }}"
+        app_name: "{{ app_name }}"
+        app_version: "{{ app_version }}"
+        client_id: "{{ diode_client_id }}"
+        client_secret: "{{ diode_client_secret }}"
+        entities:
+          - type: vlan
+            data:
+              name: "Management"
+              vid: 100
+              status: "active"
+              site: "London DC1"
+          - type: vlan
+            data:
+              name: "Servers"
+              vid: 200
+              status: "active"
+              site: "London DC1"
+          - type: vlan
+            data:
+              name: "Storage"
+              vid: 300
+              status: "active"
+              site: "London DC1"
+          - type: vlan
+            data:
+              name: "Management"
+              vid: 100
+              status: "active"
+              site: "New York DC1"
+          - type: vlan
+            data:
+              name: "Servers"
+              vid: 200
+              status: "active"
+              site: "New York DC1"
+
+    # --- Step 9: Ingest tenancy ---
+
+    - name: Create tenants
+      netboxlabs.diode.diode_ingest:
+        target: "{{ diode_target }}"
+        app_name: "{{ app_name }}"
+        app_version: "{{ app_version }}"
+        client_id: "{{ diode_client_id }}"
+        client_secret: "{{ diode_client_secret }}"
+        entities:
+          - type: tenant_group
+            data:
+              name: "Internal Teams"
+          - type: tenant
+            data:
+              name: "Network Engineering"
+              group: "Internal Teams"
+              description: "Network infrastructure team"
+          - type: tenant
+            data:
+              name: "Platform Engineering"
+              group: "Internal Teams"
+              description: "Platform and compute team"
+
+    # --- Step 10: Ingest circuits and providers ---
+
+    - name: Create circuits and providers
+      netboxlabs.diode.diode_ingest:
+        target: "{{ diode_target }}"
+        app_name: "{{ app_name }}"
+        app_version: "{{ app_version }}"
+        client_id: "{{ diode_client_id }}"
+        client_secret: "{{ diode_client_secret }}"
+        entities:
+          - type: provider
+            data:
+              name: "BT Wholesale"
+          - type: provider
+            data:
+              name: "Zayo"
+          - type: circuit_type
+            data:
+              name: "Dark Fibre"
+          - type: circuit_type
+            data:
+              name: "MPLS"
+          - type: circuit
+            data:
+              cid: "BT-LON-001"
+              provider: "BT Wholesale"
+              type: "Dark Fibre"
+              description: "London DC1 primary circuit"
+          - type: circuit
+            data:
+              cid: "ZAYO-NYC-001"
+              provider: "Zayo"
+              type: "MPLS"
+              description: "NYC DC1 primary circuit"
+
+    # --- Summary ---
+
+    - name: Summary
+      ansible.builtin.debug:
+        msg: >-
+          Demo complete! Ingested infrastructure across 2 regions, 2 sites,
+          3 manufacturers, 6 devices, 8 interfaces, 11 IP objects,
+          5 VLANs, 3 tenants, and 2 circuits into NetBox via Diode.

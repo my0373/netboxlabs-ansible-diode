@@ -1,0 +1,4 @@
+---
+diode_target: "grpc://localhost:8080/diode"
+diode_app_name: "integration-test"
+diode_app_version: "1.0.0"

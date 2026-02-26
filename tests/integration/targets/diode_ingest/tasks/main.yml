@@ -1,0 +1,94 @@
+---
+- name: Test diode_info module
+  netboxlabs.diode.diode_info:
+  register: info_result
+
+- name: Verify SDK is installed
+  ansible.builtin.assert:
+    that:
+      - info_result.sdk_installed
+      - info_result.entity_type_count > 0
+    fail_msg: "Diode SDK is not installed or has no entity types"
+
+- name: Test ingesting a single device (check mode)
+  netboxlabs.diode.diode_ingest:
+    target: "{{ diode_target }}"
+    app_name: "{{ diode_app_name }}"
+    app_version: "{{ diode_app_version }}"
+    entities:
+      - type: device
+        data:
+          name: "test-switch-01"
+          device_type: "Test Switch"
+          site: "Test Site"
+          role: "test-role"
+          status: "active"
+  check_mode: true
+  register: check_result
+
+- name: Verify check mode result
+  ansible.builtin.assert:
+    that:
+      - check_result.changed
+      - check_result.ingested_count == 1
+    fail_msg: "Check mode did not report expected results"
+
+- name: Test ingesting multiple entity types (check mode)
+  netboxlabs.diode.diode_ingest:
+    target: "{{ diode_target }}"
+    app_name: "{{ diode_app_name }}"
+    app_version: "{{ diode_app_version }}"
+    entities:
+      - type: site
+        data:
+          name: "Integration Test Site"
+          status: "active"
+      - type: manufacturer
+        data:
+          name: "Test Manufacturer"
+      - type: device
+        data:
+          name: "test-router-01"
+          device_type: "Test Router"
+          site: "Integration Test Site"
+          role: "router"
+          status: "active"
+      - type: ip_address
+        data:
+          address: "10.100.0.1/24"
+          status: "active"
+      - type: prefix
+        data:
+          prefix: "10.100.0.0/24"
+          status: "active"
+    metadata:
+      source: "integration-test"
+      test_run: "true"
+  check_mode: true
+  register: multi_result
+
+- name: Verify multi-entity check mode result
+  ansible.builtin.assert:
+    that:
+      - multi_result.changed
+      - multi_result.ingested_count == 5
+    fail_msg: "Multi-entity check mode did not report expected results"
+
+- name: Test ingesting with string shorthand (check mode)
+  netboxlabs.diode.diode_ingest:
+    target: "{{ diode_target }}"
+    app_name: "{{ diode_app_name }}"
+    entities:
+      - type: site
+        data: "Shorthand Site"
+      - type: manufacturer
+        data: "Shorthand Manufacturer"
+  check_mode: true
+  register: shorthand_result
+
+- name: Verify string shorthand check mode
+  ansible.builtin.assert:
+    that:
+      - shorthand_result.changed
+      - shorthand_result.ingested_count == 2
+    fail_msg: "String shorthand check mode failed"

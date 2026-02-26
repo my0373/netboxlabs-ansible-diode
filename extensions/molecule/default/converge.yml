@@ -1,0 +1,18 @@
+---
+- name: Converge - SDK info
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Retrieve Diode SDK information
+      netboxlabs.diode.diode_info:
+      register: sdk_info
+
+    - name: Assert SDK is installed
+      ansible.builtin.assert:
+        that:
+          - sdk_info.sdk_installed is true
+          - sdk_info.sdk_version is defined
+          - sdk_info.entity_type_count > 60
+        fail_msg: "SDK not installed or not reporting correctly"

@@ -1,0 +1,88 @@
+---
+- name: Converge - Dry run workflow
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    dryrun_output_dir: "/tmp/molecule-diode-dryrun"
+
+  tasks:
+    - name: Ensure output directory exists
+      ansible.builtin.file:
+        path: "{{ dryrun_output_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Dry run - write a single device
+      netboxlabs.diode.diode_dry_run:
+        app_name: "molecule_single"
+        output_dir: "{{ dryrun_output_dir }}"
+        entities:
+          - type: device
+            data:
+              name: "dryrun-switch-01"
+              device_type: "Test Switch"
+              site: "DryRun-Site"
+              role: "access-switch"
+              status: "active"
+              serial: "DRY-001"
+
+    - name: Dry run - write multiple entity types
+      netboxlabs.diode.diode_dry_run:
+        app_name: "molecule_multi"
+        output_dir: "{{ dryrun_output_dir }}"
+        entities:
+          - type: site
+            data:
+              name: "DryRun-Site-A"
+              status: "active"
+          - type: site
+            data:
+              name: "DryRun-Site-B"
+              status: "planned"
+          - type: device
+            data:
+              name: "dryrun-router-01"
+              device_type: "Test Router"
+              site: "DryRun-Site-A"
+              role: "router"
+              status: "active"
+          - type: ip_address
+            data:
+              address: "10.200.0.1/24"
+              status: "active"
+          - type: prefix
+            data:
+              prefix: "10.200.0.0/24"
+              status: "active"
+          - type: vlan
+            data:
+              name: "DryRun-VLAN"
+              vid: 200
+              status: "active"
+          - type: tenant
+            data:
+              name: "DryRun Tenant"
+          - type: manufacturer
+            data:
+              name: "DryRun Mfr"
+
+    - name: Dry run with request-level metadata
+      netboxlabs.diode.diode_dry_run:
+        app_name: "molecule_meta"
+        output_dir: "{{ dryrun_output_dir }}"
+        entities:
+          - type: device
+            data:
+              name: "meta-device-01"
+              device_type: "Meta Type"
+              site: "Meta-Site"
+              role: "server"
+              status: "active"
+              metadata:
+                entity_source: "molecule"
+        metadata:
+          batch_id: "mol-dry-001"
+          source: "molecule-test"
+          timestamp: "2026-02-25T00:00:00Z"
