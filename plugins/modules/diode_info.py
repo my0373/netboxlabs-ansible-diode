@@ -18,7 +18,7 @@ description:
   - Returns information about the installed Diode SDK, including the version
     and all supported entity types.
   - Useful for validating that the SDK is installed and discovering available
-    entity types for use with M(netboxlabs.diode.diode_ingest).
+    entity types for use with M(my0373.diode.diode_ingest).
   - This module makes no changes and requires no connection parameters.
 options: {}
 requirements:
@@ -30,7 +30,7 @@ author:
 
 EXAMPLES = r"""
 - name: Get Diode SDK information
-  netboxlabs.diode.diode_info:
+  my0373.diode.diode_info:
   register: diode_sdk_info
 
 - name: Display SDK version
@@ -71,11 +71,11 @@ entity_type_count:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.netboxlabs.diode.plugins.module_utils.client import (
+from ansible_collections.my0373.diode.plugins.module_utils.client import (
     HAS_DIODE_SDK,
     get_sdk_version,
 )
-from ansible_collections.netboxlabs.diode.plugins.module_utils.entity_builder import (
+from ansible_collections.my0373.diode.plugins.module_utils.entity_builder import (
     SUPPORTED_ENTITY_TYPES,
 )
 

@@ -1,5 +1,5 @@
 ---
-namespace: netboxlabs
+namespace: my0373
 name: diode
 version: "1.10.0"
 readme: README.md

@@ -45,8 +45,8 @@ body:
     id: collection-version
     attributes:
       label: Collection Version
-      description: Output of `ansible-galaxy collection list netboxlabs.diode`
-      placeholder: "netboxlabs.diode 1.10.0"
+      description: Output of `ansible-galaxy collection list my0373.diode`
+      placeholder: "my0373.diode 1.10.0"
     validations:
       required: true
 

@@ -13,8 +13,8 @@ source .venv/bin/activate
 uv pip install ansible-core netboxlabs-diode-sdk pytest pytest-mock molecule
 
 # Create the collection symlink so Ansible can find the collection
-mkdir -p /tmp/ansible_collections/netboxlabs
-ln -sf "$(pwd)" /tmp/ansible_collections/netboxlabs/diode
+mkdir -p /tmp/ansible_collections/my0373
+ln -sf "$(pwd)" /tmp/ansible_collections/my0373/diode
 ```
 
 Or use the Makefile shortcut:

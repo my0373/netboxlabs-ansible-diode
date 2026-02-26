@@ -18,7 +18,7 @@
     # --- Step 1: Verify SDK is available ---
 
     - name: Check Diode SDK availability
-      netboxlabs.diode.diode_info:
+      my0373.diode.diode_info:
       register: sdk_info
 
     - name: Display SDK version
@@ -28,7 +28,7 @@
     # --- Step 2: Ingest sites, regions, and locations ---
 
     - name: Create site hierarchy
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "{{ diode_target }}"
         app_name: "{{ app_name }}"
         app_version: "{{ app_version }}"
@@ -86,7 +86,7 @@
     # --- Step 3: Ingest manufacturers, platforms, and device types ---
 
     - name: Create device ecosystem
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "{{ diode_target }}"
         app_name: "{{ app_name }}"
         app_version: "{{ app_version }}"
@@ -147,7 +147,7 @@
     # --- Step 4: Ingest racks ---
 
     - name: Create racks
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "{{ diode_target }}"
         app_name: "{{ app_name }}"
         app_version: "{{ app_version }}"
@@ -177,7 +177,7 @@
     # --- Step 5: Ingest devices ---
 
     - name: Create network devices
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "{{ diode_target }}"
         app_name: "{{ app_name }}"
         app_version: "{{ app_version }}"
@@ -268,7 +268,7 @@
     # --- Step 6: Ingest interfaces ---
 
     - name: Create device interfaces
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "{{ diode_target }}"
         app_name: "{{ app_name }}"
         app_version: "{{ app_version }}"
@@ -335,7 +335,7 @@
     # --- Step 7: Ingest IP addressing ---
 
     - name: Create IP addressing
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "{{ diode_target }}"
         app_name: "{{ app_name }}"
         app_version: "{{ app_version }}"
@@ -414,7 +414,7 @@
     # --- Step 8: Ingest VLANs ---
 
     - name: Create VLANs
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "{{ diode_target }}"
         app_name: "{{ app_name }}"
         app_version: "{{ app_version }}"
@@ -455,7 +455,7 @@
     # --- Step 9: Ingest tenancy ---
 
     - name: Create tenants
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "{{ diode_target }}"
         app_name: "{{ app_name }}"
         app_version: "{{ app_version }}"
@@ -479,7 +479,7 @@
     # --- Step 10: Ingest circuits and providers ---
 
     - name: Create circuits and providers
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "{{ diode_target }}"
         app_name: "{{ app_name }}"
         app_version: "{{ app_version }}"

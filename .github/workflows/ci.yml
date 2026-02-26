@@ -31,15 +31,15 @@ jobs:
 
       - name: Create collection symlink
         run: |
-          mkdir -p /tmp/ansible_collections/netboxlabs
-          ln -sf "${{ github.workspace }}" /tmp/ansible_collections/netboxlabs/diode
+          mkdir -p /tmp/ansible_collections/my0373
+          ln -sf "${{ github.workspace }}" /tmp/ansible_collections/my0373/diode
 
       - name: Run yamllint
         run: yamllint -d relaxed plugins/ meta/ extensions/molecule/
 
       - name: Run ansible-lint
         run: |
-          cd /tmp/ansible_collections/netboxlabs/diode
+          cd /tmp/ansible_collections/my0373/diode
           ansible-lint plugins/ --profile production || true
 
   sanity:
@@ -64,11 +64,11 @@ jobs:
 
       - name: Create collection layout
         run: |
-          mkdir -p /tmp/ansible_collections/netboxlabs
-          ln -sf "${{ github.workspace }}" /tmp/ansible_collections/netboxlabs/diode
+          mkdir -p /tmp/ansible_collections/my0373
+          ln -sf "${{ github.workspace }}" /tmp/ansible_collections/my0373/diode
 
       - name: Run ansible-test sanity
-        working-directory: /tmp/ansible_collections/netboxlabs/diode
+        working-directory: /tmp/ansible_collections/my0373/diode
         run: |
           ansible-test sanity --python ${{ matrix.python-version }} --skip-test import || true
 
@@ -94,8 +94,8 @@ jobs:
 
       - name: Create collection symlink
         run: |
-          mkdir -p /tmp/ansible_collections/netboxlabs
-          ln -sf "${{ github.workspace }}" /tmp/ansible_collections/netboxlabs/diode
+          mkdir -p /tmp/ansible_collections/my0373
+          ln -sf "${{ github.workspace }}" /tmp/ansible_collections/my0373/diode
 
       - name: Run unit tests
         run: PYTHONPATH=/tmp:$PYTHONPATH pytest tests/unit/ -v --tb=short
@@ -123,8 +123,8 @@ jobs:
 
       - name: Create collection symlink
         run: |
-          mkdir -p /tmp/ansible_collections/netboxlabs
-          ln -sf "${{ github.workspace }}" /tmp/ansible_collections/netboxlabs/diode
+          mkdir -p /tmp/ansible_collections/my0373
+          ln -sf "${{ github.workspace }}" /tmp/ansible_collections/my0373/diode
 
       - name: Run Molecule scenario
         run: molecule test -s ${{ matrix.scenario }}

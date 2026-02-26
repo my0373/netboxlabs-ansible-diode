@@ -14,7 +14,7 @@ provisioner:
   inventory:
     host_vars:
       localhost:
-        ansible_python_interpreter: "${MOLECULE_PROJECT_DIRECTORY}/.venv/bin/python"
+        ansible_python_interpreter: "${MOLECULE_PYTHON_INTERPRETER:-python3}"
 verifier:
   name: ansible
 scenario:

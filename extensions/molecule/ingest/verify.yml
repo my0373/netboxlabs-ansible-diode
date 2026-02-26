@@ -8,7 +8,7 @@
     # --- Verify DCIM entities ---
 
     - name: Ingest DCIM entities in check mode
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "grpc://localhost:8080/diode"
         app_name: "mol-verify-dcim"
         entities:
@@ -45,7 +45,7 @@
     # --- Verify IPAM entities ---
 
     - name: Ingest IPAM entities in check mode
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "grpc://localhost:8080/diode"
         app_name: "mol-verify-ipam"
         entities:
@@ -88,7 +88,7 @@
     # --- Verify virtualization entities ---
 
     - name: Ingest virtualization entities in check mode
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "grpc://localhost:8080/diode"
         app_name: "mol-verify-virt"
         entities:
@@ -126,7 +126,7 @@
     # --- Verify circuit entities ---
 
     - name: Ingest circuit entities in check mode
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "grpc://localhost:8080/diode"
         app_name: "mol-verify-circuits"
         entities:
@@ -156,7 +156,7 @@
     # --- Verify VPN entities ---
 
     - name: Ingest VPN entities in check mode
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "grpc://localhost:8080/diode"
         app_name: "mol-verify-vpn"
         entities:
@@ -186,7 +186,7 @@
     # --- Verify wireless entities ---
 
     - name: Ingest wireless entities in check mode
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "grpc://localhost:8080/diode"
         app_name: "mol-verify-wireless"
         entities:
@@ -209,7 +209,7 @@
     # --- Verify error handling ---
 
     - name: Ingest with invalid entity type should fail
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "grpc://localhost:8080/diode"
         app_name: "mol-verify-error"
         entities:
@@ -227,7 +227,7 @@
         fail_msg: "Invalid entity type should fail with descriptive error"
 
     - name: Ingest with missing entity type should fail
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "grpc://localhost:8080/diode"
         app_name: "mol-verify-error"
         entities:
@@ -243,7 +243,7 @@
         fail_msg: "Missing entity type should have failed"
 
     - name: Replay with missing file should fail
-      netboxlabs.diode.diode_replay:
+      my0373.diode.diode_replay:
         target: "grpc://localhost:8080/diode"
         app_name: "mol-verify-error"
         files:

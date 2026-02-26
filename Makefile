@@ -1,9 +1,9 @@
 .PHONY: setup test molecule lint test-all build clean help version-check release-check
 
 VENV := .venv
-PYTHON := $(VENV)/bin/python
+PYTHON := $(CURDIR)/$(VENV)/bin/python
 PYTEST := PYTHONPATH=/tmp:$$PYTHONPATH $(VENV)/bin/pytest
-COLLECTION_PATH := /tmp/ansible_collections/netboxlabs/diode
+COLLECTION_PATH := /tmp/ansible_collections/my0373/diode
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
@@ -12,7 +12,7 @@ help: ## Show this help
 setup: ## Create venv, install deps, create collection symlink
 	uv venv
 	$(VENV)/bin/pip install ansible-core netboxlabs-diode-sdk pytest pytest-mock molecule
-	mkdir -p /tmp/ansible_collections/netboxlabs
+	mkdir -p /tmp/ansible_collections/my0373
 	ln -sf "$$(pwd)" $(COLLECTION_PATH)
 	@echo "\nSetup complete. Run: source $(VENV)/bin/activate"
 
@@ -20,10 +20,10 @@ test: ## Run unit tests
 	$(PYTEST) tests/unit/ -v
 
 molecule: ## Run all Molecule scenarios
-	$(VENV)/bin/molecule test --all
+	MOLECULE_PYTHON_INTERPRETER=$(PYTHON) $(VENV)/bin/molecule test --all
 
 molecule-s: ## Run a single Molecule scenario (usage: make molecule-s S=default)
-	$(VENV)/bin/molecule test -s $(S)
+	MOLECULE_PYTHON_INTERPRETER=$(PYTHON) $(VENV)/bin/molecule test -s $(S)
 
 lint: ## Run yamllint on YAML files
 	$(VENV)/bin/yamllint -d relaxed plugins/ meta/ extensions/molecule/

@@ -44,14 +44,14 @@ def mock_module(module_args):
         yield module_args
 
 
-DIODE_MOD = "ansible_collections.netboxlabs.diode.plugins.module_utils.diode_module"
+DIODE_MOD = "ansible_collections.my0373.diode.plugins.module_utils.diode_module"
 
 
 class TestDiodeIngestCheckMode:
     @patch("{0}.HAS_DIODE_SDK".format(DIODE_MOD), True)
     def test_check_mode_returns_changed(self, mock_module):
         with patch(
-            "ansible_collections.netboxlabs.diode.plugins.modules.diode_ingest.AnsibleModule"
+            "ansible_collections.my0373.diode.plugins.modules.diode_ingest.AnsibleModule"
         ) as MockAM:
             mock_instance = MagicMock()
             mock_instance.params = mock_module
@@ -60,7 +60,7 @@ class TestDiodeIngestCheckMode:
             mock_instance.exit_json.side_effect = SystemExit(0)
 
             with pytest.raises(SystemExit):
-                from ansible_collections.netboxlabs.diode.plugins.modules import (
+                from ansible_collections.my0373.diode.plugins.modules import (
                     diode_ingest,
                 )
                 diode_ingest.main()
@@ -90,7 +90,7 @@ class TestDiodeIngestExecution:
         }
 
         with patch(
-            "ansible_collections.netboxlabs.diode.plugins.modules.diode_ingest.AnsibleModule"
+            "ansible_collections.my0373.diode.plugins.modules.diode_ingest.AnsibleModule"
         ) as MockAM:
             mock_instance = MagicMock()
             mock_instance.params = mock_module
@@ -99,7 +99,7 @@ class TestDiodeIngestExecution:
             mock_instance.exit_json.side_effect = SystemExit(0)
 
             with pytest.raises(SystemExit):
-                from ansible_collections.netboxlabs.diode.plugins.modules import (
+                from ansible_collections.my0373.diode.plugins.modules import (
                     diode_ingest,
                 )
                 diode_ingest.main()
@@ -129,7 +129,7 @@ class TestDiodeIngestExecution:
         }
 
         with patch(
-            "ansible_collections.netboxlabs.diode.plugins.modules.diode_ingest.AnsibleModule"
+            "ansible_collections.my0373.diode.plugins.modules.diode_ingest.AnsibleModule"
         ) as MockAM:
             mock_instance = MagicMock()
             mock_instance.params = mock_module
@@ -138,7 +138,7 @@ class TestDiodeIngestExecution:
             mock_instance.exit_json.side_effect = SystemExit(0)
 
             with pytest.raises(SystemExit):
-                from ansible_collections.netboxlabs.diode.plugins.modules import (
+                from ansible_collections.my0373.diode.plugins.modules import (
                     diode_ingest,
                 )
                 diode_ingest.main()
@@ -151,7 +151,7 @@ class TestDiodeIngestExecution:
     @patch("{0}.build_entities".format(DIODE_MOD), side_effect=ValueError("Bad entity"))
     def test_entity_build_failure(self, mock_build, mock_module):
         with patch(
-            "ansible_collections.netboxlabs.diode.plugins.modules.diode_ingest.AnsibleModule"
+            "ansible_collections.my0373.diode.plugins.modules.diode_ingest.AnsibleModule"
         ) as MockAM:
             mock_instance = MagicMock()
             mock_instance.params = mock_module
@@ -160,7 +160,7 @@ class TestDiodeIngestExecution:
             mock_instance.fail_json.side_effect = SystemExit(1)
 
             with pytest.raises(SystemExit):
-                from ansible_collections.netboxlabs.diode.plugins.modules import (
+                from ansible_collections.my0373.diode.plugins.modules import (
                     diode_ingest,
                 )
                 diode_ingest.main()
@@ -171,7 +171,7 @@ class TestDiodeIngestExecution:
     @patch("{0}.HAS_DIODE_SDK".format(DIODE_MOD), False)
     def test_fails_when_sdk_missing(self, mock_module):
         with patch(
-            "ansible_collections.netboxlabs.diode.plugins.modules.diode_ingest.AnsibleModule"
+            "ansible_collections.my0373.diode.plugins.modules.diode_ingest.AnsibleModule"
         ) as MockAM:
             mock_instance = MagicMock()
             mock_instance.params = mock_module
@@ -180,7 +180,7 @@ class TestDiodeIngestExecution:
             mock_instance.fail_json.side_effect = SystemExit(1)
 
             with pytest.raises(SystemExit):
-                from ansible_collections.netboxlabs.diode.plugins.modules import (
+                from ansible_collections.my0373.diode.plugins.modules import (
                     diode_ingest,
                 )
                 diode_ingest.main()

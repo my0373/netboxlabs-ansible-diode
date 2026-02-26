@@ -1,6 +1,6 @@
 # Release Process
 
-This document describes how to release a new version of the `netboxlabs.diode`
+This document describes how to release a new version of the `my0373.diode`
 Ansible collection.
 
 ## Versioning Strategy
@@ -108,7 +108,7 @@ Pushing the tag triggers the release workflow which:
 
 1. **Validates** that `galaxy.yml` version matches the tag.
 2. **Runs** the full test suite across Python 3.10, 3.11, and 3.12.
-3. **Builds** the collection tarball (`netboxlabs-diode-1.10.1.tar.gz`).
+3. **Builds** the collection tarball (`my0373-diode-1.10.1.tar.gz`).
 4. **Creates a GitHub Release** with the tarball attached and
    auto-generated release notes.
 5. **Publishes to Ansible Galaxy** using the `GALAXY_API_KEY` secret.
@@ -117,7 +117,7 @@ Pushing the tag triggers the release workflow which:
 
 ```bash
 # Check Galaxy
-ansible-galaxy collection install netboxlabs.diode:==1.10.1 --force
+ansible-galaxy collection install my0373.diode:==1.10.1 --force
 
 # Check GitHub release
 gh release view v1.10.1

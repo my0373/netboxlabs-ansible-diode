@@ -5,7 +5,7 @@
 # them in batches with automatic chunking.
 #
 # Usage:
-#   ansible-playbook netboxlabs.diode.bulk_ingest \
+#   ansible-playbook my0373.diode.bulk_ingest \
 #     -e @my_entities.yml \
 #     -e diode_target=grpc://diode.example.com:8080/diode
 #
@@ -91,7 +91,7 @@
         msg: "Preparing to ingest {{ diode_entities | length }} entities"
 
     - name: Ingest all entities with chunking
-      netboxlabs.diode.diode_ingest:
+      my0373.diode.diode_ingest:
         target: "{{ diode_target }}"
         app_name: "{{ diode_app_name }}"
         entities: "{{ diode_entities }}"
