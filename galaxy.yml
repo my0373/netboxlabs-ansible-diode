@@ -21,10 +21,10 @@ tags:
   - dcim
   - ipam
   - sdk
-repository: https://github.com/netboxlabs/netboxlabs-ansible-diode
-documentation: https://github.com/netboxlabs/netboxlabs-ansible-diode/tree/main/docs
+repository: https://github.com/my0373/netboxlabs-ansible-diode
+documentation: https://github.com/my0373/netboxlabs-ansible-diode/tree/main/docs
 homepage: https://netboxlabs.com
-issues: https://github.com/netboxlabs/netboxlabs-ansible-diode/issues
+issues: https://github.com/my0373/netboxlabs-ansible-diode/issues
 dependencies: {}
 build_ignore:
   - .git

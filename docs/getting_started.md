@@ -20,7 +20,7 @@ ansible-galaxy collection install netboxlabs.diode
 Or install from a local build:
 
 ```bash
-git clone https://github.com/netboxlabs/netboxlabs-ansible-diode.git
+git clone https://github.com/my0373/netboxlabs-ansible-diode.git
 cd netboxlabs-ansible-diode
 ansible-galaxy collection build
 ansible-galaxy collection install netboxlabs-diode-*.tar.gz

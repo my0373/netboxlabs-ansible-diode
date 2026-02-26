@@ -2,7 +2,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: Security Vulnerability
-    url: https://github.com/netboxlabs/netboxlabs-ansible-diode/security/advisories/new
+    url: https://github.com/my0373/netboxlabs-ansible-diode/security/advisories/new
     about: Report a security vulnerability (do NOT open a public issue)
   - name: Diode SDK Issues
     url: https://github.com/netboxlabs/diode-sdk-python/issues

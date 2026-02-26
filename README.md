@@ -1,7 +1,7 @@
 # NetBox Labs Diode Ansible Collection
 
-[![CI](https://github.com/netboxlabs/netboxlabs-ansible-diode/actions/workflows/ci.yml/badge.svg)](https://github.com/netboxlabs/netboxlabs-ansible-diode/actions/workflows/ci.yml)
-[![Security](https://github.com/netboxlabs/netboxlabs-ansible-diode/actions/workflows/security.yml/badge.svg)](https://github.com/netboxlabs/netboxlabs-ansible-diode/actions/workflows/security.yml)
+[![CI](https://github.com/my0373/netboxlabs-ansible-diode/actions/workflows/ci.yml/badge.svg)](https://github.com/my0373/netboxlabs-ansible-diode/actions/workflows/ci.yml)
+[![Security](https://github.com/my0373/netboxlabs-ansible-diode/actions/workflows/security.yml/badge.svg)](https://github.com/my0373/netboxlabs-ansible-diode/actions/workflows/security.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 An Ansible collection for ingesting network data into [NetBox](https://netbox.dev) via the [Diode](https://netboxlabs.com/blog/introducing-diode-streamlining-data-ingestion-in-netbox/) ingestion service. It wraps the [Diode SDK for Python](https://github.com/netboxlabs/diode-sdk-python) and supports all 70+ NetBox entity types.

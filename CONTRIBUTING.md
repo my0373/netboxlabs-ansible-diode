@@ -121,7 +121,7 @@ See the [Testing Guide](docs/testing.md) for details.
 ## Development Setup
 
 ```bash
-git clone https://github.com/netboxlabs/netboxlabs-ansible-diode.git
+git clone https://github.com/my0373/netboxlabs-ansible-diode.git
 cd netboxlabs-ansible-diode
 make setup    # creates venv, installs deps, creates symlink
 ```
@@ -183,7 +183,7 @@ CI validates version consistency automatically.
 
 ## Reporting Issues
 
-- Use [GitHub Issues](https://github.com/netboxlabs/netboxlabs-ansible-diode/issues) for bug reports and feature requests.
+- Use [GitHub Issues](https://github.com/my0373/netboxlabs-ansible-diode/issues) for bug reports and feature requests.
 - For security vulnerabilities, see [SECURITY.md](SECURITY.md).
 
 ## Code of Conduct
