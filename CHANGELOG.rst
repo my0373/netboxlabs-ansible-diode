@@ -10,7 +10,7 @@ v1.10.0
 Release Summary
 ---------------
 
-Initial public release of the ``netboxlabs.diode`` Ansible collection,
+Initial public release of the ``my0373.diode`` Ansible collection,
 pinned to Diode SDK >= 1.10.0.
 
 Major Changes

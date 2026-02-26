@@ -61,10 +61,10 @@ def mock_sdk(monkeypatch):
             "netboxlabs.diode.sdk.ingester.{0}".format(name), cls
         )
 
-    if "ansible_collections.netboxlabs.diode.plugins.module_utils.entity_builder" in sys.modules:
-        del sys.modules["ansible_collections.netboxlabs.diode.plugins.module_utils.entity_builder"]
+    if "ansible_collections.my0373.diode.plugins.module_utils.entity_builder" in sys.modules:
+        del sys.modules["ansible_collections.my0373.diode.plugins.module_utils.entity_builder"]
 
-    from ansible_collections.netboxlabs.diode.plugins.module_utils import entity_builder
+    from ansible_collections.my0373.diode.plugins.module_utils import entity_builder
     entity_builder.HAS_DIODE_SDK = True
 
     for type_name, (kwarg, _) in list(entity_builder.ENTITY_TYPE_MAP.items()):

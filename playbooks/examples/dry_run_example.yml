@@ -21,7 +21,7 @@
         mode: "0755"
 
     - name: Write entities to dry-run files
-      netboxlabs.diode.diode_dry_run:
+      my0373.diode.diode_dry_run:
         app_name: "network_audit"
         output_dir: "{{ dryrun_output_dir }}"
         entities:
@@ -86,7 +86,7 @@
       register: replay_files
 
     - name: Replay dry-run files into Diode
-      netboxlabs.diode.diode_replay:
+      my0373.diode.diode_replay:
         target: "{{ diode_target }}"
         app_name: "ansible-replay"
         app_version: "1.0.0"

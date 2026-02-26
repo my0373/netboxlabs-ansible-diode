@@ -18,10 +18,10 @@ description:
   - Generate JSON files representing Diode ingestion requests without actually
     sending them to a Diode service.
   - Useful for previewing, auditing, or archiving what would be ingested.
-  - The generated files can later be replayed using M(netboxlabs.diode.diode_replay).
+  - The generated files can later be replayed using M(my0373.diode.diode_replay).
   - File names follow the pattern C(<app_name>_<timestamp_ns>.json).
 extends_documentation_fragment:
-  - netboxlabs.diode.common.ENTITIES
+  - my0373.diode.common.ENTITIES
 options:
   app_name:
     description:
@@ -43,7 +43,7 @@ author:
 
 EXAMPLES = r"""
 - name: Dry run - write devices to JSON file
-  netboxlabs.diode.diode_dry_run:
+  my0373.diode.diode_dry_run:
     app_name: "my_import"
     output_dir: "/tmp/diode-dryrun"
     entities:
@@ -76,17 +76,17 @@ output_dir:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.netboxlabs.diode.plugins.module_utils.arg_specs import (
+from ansible_collections.my0373.diode.plugins.module_utils.arg_specs import (
     diode_dry_run_arg_spec,
     diode_entities_arg_spec,
 )
-from ansible_collections.netboxlabs.diode.plugins.module_utils.client import (
+from ansible_collections.my0373.diode.plugins.module_utils.client import (
     HAS_DIODE_SDK,
     SDK_IMPORT_ERROR,
     create_dry_run_client,
     ingest_with_chunking,
 )
-from ansible_collections.netboxlabs.diode.plugins.module_utils.entity_builder import (
+from ansible_collections.my0373.diode.plugins.module_utils.entity_builder import (
     build_entities,
 )
 

@@ -33,16 +33,16 @@ def module_args(tmp_path):
 
 class TestDiodeReplayCheckMode:
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.module_utils.client.HAS_DIODE_SDK",
+        "ansible_collections.my0373.diode.plugins.module_utils.client.HAS_DIODE_SDK",
         True,
     )
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_replay.HAS_LOAD_DRYRUN",
+        "ansible_collections.my0373.diode.plugins.modules.diode_replay.HAS_LOAD_DRYRUN",
         True,
     )
     def test_check_mode_reports_file_count(self, module_args):
         with patch(
-            "ansible_collections.netboxlabs.diode.plugins.modules.diode_replay.AnsibleModule"
+            "ansible_collections.my0373.diode.plugins.modules.diode_replay.AnsibleModule"
         ) as MockAM:
             mock_instance = MagicMock()
             mock_instance.params = module_args
@@ -51,7 +51,7 @@ class TestDiodeReplayCheckMode:
             mock_instance.exit_json.side_effect = SystemExit(0)
 
             with pytest.raises(SystemExit):
-                from ansible_collections.netboxlabs.diode.plugins.modules import (
+                from ansible_collections.my0373.diode.plugins.modules import (
                     diode_replay,
                 )
                 diode_replay.main()
@@ -63,21 +63,21 @@ class TestDiodeReplayCheckMode:
 
 class TestDiodeReplayExecution:
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.module_utils.client.HAS_DIODE_SDK",
+        "ansible_collections.my0373.diode.plugins.module_utils.client.HAS_DIODE_SDK",
         True,
     )
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_replay.HAS_LOAD_DRYRUN",
+        "ansible_collections.my0373.diode.plugins.modules.diode_replay.HAS_LOAD_DRYRUN",
         True,
     )
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_replay.load_dryrun_entities"
+        "ansible_collections.my0373.diode.plugins.modules.diode_replay.load_dryrun_entities"
     )
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_replay.create_diode_client"
+        "ansible_collections.my0373.diode.plugins.modules.diode_replay.create_diode_client"
     )
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_replay.ingest_with_chunking"
+        "ansible_collections.my0373.diode.plugins.modules.diode_replay.ingest_with_chunking"
     )
     def test_successful_replay(
         self, mock_ingest, mock_create_client, mock_load, module_args
@@ -94,7 +94,7 @@ class TestDiodeReplayExecution:
         }
 
         with patch(
-            "ansible_collections.netboxlabs.diode.plugins.modules.diode_replay.AnsibleModule"
+            "ansible_collections.my0373.diode.plugins.modules.diode_replay.AnsibleModule"
         ) as MockAM:
             mock_instance = MagicMock()
             mock_instance.params = module_args
@@ -103,7 +103,7 @@ class TestDiodeReplayExecution:
             mock_instance.exit_json.side_effect = SystemExit(0)
 
             with pytest.raises(SystemExit):
-                from ansible_collections.netboxlabs.diode.plugins.modules import (
+                from ansible_collections.my0373.diode.plugins.modules import (
                     diode_replay,
                 )
                 diode_replay.main()
@@ -115,11 +115,11 @@ class TestDiodeReplayExecution:
             assert call_kwargs["errors"] == []
 
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.module_utils.client.HAS_DIODE_SDK",
+        "ansible_collections.my0373.diode.plugins.module_utils.client.HAS_DIODE_SDK",
         True,
     )
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_replay.HAS_LOAD_DRYRUN",
+        "ansible_collections.my0373.diode.plugins.modules.diode_replay.HAS_LOAD_DRYRUN",
         True,
     )
     def test_fails_on_missing_file(self):
@@ -136,7 +136,7 @@ class TestDiodeReplayExecution:
         }
 
         with patch(
-            "ansible_collections.netboxlabs.diode.plugins.modules.diode_replay.AnsibleModule"
+            "ansible_collections.my0373.diode.plugins.modules.diode_replay.AnsibleModule"
         ) as MockAM:
             mock_instance = MagicMock()
             mock_instance.params = args
@@ -145,7 +145,7 @@ class TestDiodeReplayExecution:
             mock_instance.fail_json.side_effect = SystemExit(1)
 
             with pytest.raises(SystemExit):
-                from ansible_collections.netboxlabs.diode.plugins.modules import (
+                from ansible_collections.my0373.diode.plugins.modules import (
                     diode_replay,
                 )
                 diode_replay.main()
@@ -153,19 +153,19 @@ class TestDiodeReplayExecution:
             assert "File not found" in mock_instance.fail_json.call_args[1]["msg"]
 
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.module_utils.client.HAS_DIODE_SDK",
+        "ansible_collections.my0373.diode.plugins.module_utils.client.HAS_DIODE_SDK",
         True,
     )
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_replay.HAS_LOAD_DRYRUN",
+        "ansible_collections.my0373.diode.plugins.modules.diode_replay.HAS_LOAD_DRYRUN",
         True,
     )
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_replay.load_dryrun_entities",
+        "ansible_collections.my0373.diode.plugins.modules.diode_replay.load_dryrun_entities",
         side_effect=Exception("Corrupt JSON"),
     )
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_replay.create_diode_client"
+        "ansible_collections.my0373.diode.plugins.modules.diode_replay.create_diode_client"
     )
     def test_handles_corrupt_file(
         self, mock_create_client, mock_load, module_args
@@ -176,7 +176,7 @@ class TestDiodeReplayExecution:
         mock_create_client.return_value = mock_client
 
         with patch(
-            "ansible_collections.netboxlabs.diode.plugins.modules.diode_replay.AnsibleModule"
+            "ansible_collections.my0373.diode.plugins.modules.diode_replay.AnsibleModule"
         ) as MockAM:
             mock_instance = MagicMock()
             mock_instance.params = module_args
@@ -185,7 +185,7 @@ class TestDiodeReplayExecution:
             mock_instance.exit_json.side_effect = SystemExit(0)
 
             with pytest.raises(SystemExit):
-                from ansible_collections.netboxlabs.diode.plugins.modules import (
+                from ansible_collections.my0373.diode.plugins.modules import (
                     diode_replay,
                 )
                 diode_replay.main()
@@ -197,11 +197,11 @@ class TestDiodeReplayExecution:
 
     def test_fails_when_sdk_missing(self, module_args):
         with patch(
-            "ansible_collections.netboxlabs.diode.plugins.modules.diode_replay.HAS_DIODE_SDK",
+            "ansible_collections.my0373.diode.plugins.modules.diode_replay.HAS_DIODE_SDK",
             False,
         ):
             with patch(
-                "ansible_collections.netboxlabs.diode.plugins.modules.diode_replay.AnsibleModule"
+                "ansible_collections.my0373.diode.plugins.modules.diode_replay.AnsibleModule"
             ) as MockAM:
                 mock_instance = MagicMock()
                 mock_instance.params = module_args
@@ -210,7 +210,7 @@ class TestDiodeReplayExecution:
                 mock_instance.fail_json.side_effect = SystemExit(1)
 
                 with pytest.raises(SystemExit):
-                    from ansible_collections.netboxlabs.diode.plugins.modules import (
+                    from ansible_collections.my0373.diode.plugins.modules import (
                         diode_replay,
                     )
                     diode_replay.main()

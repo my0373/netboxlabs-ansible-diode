@@ -29,12 +29,12 @@ def module_args():
 
 class TestDiodeDryRunCheckMode:
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.module_utils.client.HAS_DIODE_SDK",
+        "ansible_collections.my0373.diode.plugins.module_utils.client.HAS_DIODE_SDK",
         True,
     )
     def test_check_mode_reports_entity_count(self, module_args):
         with patch(
-            "ansible_collections.netboxlabs.diode.plugins.modules.diode_dry_run.AnsibleModule"
+            "ansible_collections.my0373.diode.plugins.modules.diode_dry_run.AnsibleModule"
         ) as MockAM:
             mock_instance = MagicMock()
             mock_instance.params = module_args
@@ -43,7 +43,7 @@ class TestDiodeDryRunCheckMode:
             mock_instance.exit_json.side_effect = SystemExit(0)
 
             with pytest.raises(SystemExit):
-                from ansible_collections.netboxlabs.diode.plugins.modules import (
+                from ansible_collections.my0373.diode.plugins.modules import (
                     diode_dry_run,
                 )
                 diode_dry_run.main()
@@ -56,17 +56,17 @@ class TestDiodeDryRunCheckMode:
 
 class TestDiodeDryRunExecution:
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.module_utils.client.HAS_DIODE_SDK",
+        "ansible_collections.my0373.diode.plugins.module_utils.client.HAS_DIODE_SDK",
         True,
     )
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_dry_run.build_entities"
+        "ansible_collections.my0373.diode.plugins.modules.diode_dry_run.build_entities"
     )
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_dry_run.create_dry_run_client"
+        "ansible_collections.my0373.diode.plugins.modules.diode_dry_run.create_dry_run_client"
     )
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_dry_run.ingest_with_chunking"
+        "ansible_collections.my0373.diode.plugins.modules.diode_dry_run.ingest_with_chunking"
     )
     def test_successful_dry_run(
         self, mock_ingest, mock_create_client, mock_build, module_args
@@ -83,7 +83,7 @@ class TestDiodeDryRunExecution:
         }
 
         with patch(
-            "ansible_collections.netboxlabs.diode.plugins.modules.diode_dry_run.AnsibleModule"
+            "ansible_collections.my0373.diode.plugins.modules.diode_dry_run.AnsibleModule"
         ) as MockAM:
             mock_instance = MagicMock()
             mock_instance.params = module_args
@@ -92,7 +92,7 @@ class TestDiodeDryRunExecution:
             mock_instance.exit_json.side_effect = SystemExit(0)
 
             with pytest.raises(SystemExit):
-                from ansible_collections.netboxlabs.diode.plugins.modules import (
+                from ansible_collections.my0373.diode.plugins.modules import (
                     diode_dry_run,
                 )
                 diode_dry_run.main()
@@ -102,16 +102,16 @@ class TestDiodeDryRunExecution:
             assert call_kwargs["entity_count"] == 1
 
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.module_utils.client.HAS_DIODE_SDK",
+        "ansible_collections.my0373.diode.plugins.module_utils.client.HAS_DIODE_SDK",
         True,
     )
     @patch(
-        "ansible_collections.netboxlabs.diode.plugins.modules.diode_dry_run.build_entities",
+        "ansible_collections.my0373.diode.plugins.modules.diode_dry_run.build_entities",
         side_effect=ValueError("Bad type"),
     )
     def test_entity_build_failure(self, mock_build, module_args):
         with patch(
-            "ansible_collections.netboxlabs.diode.plugins.modules.diode_dry_run.AnsibleModule"
+            "ansible_collections.my0373.diode.plugins.modules.diode_dry_run.AnsibleModule"
         ) as MockAM:
             mock_instance = MagicMock()
             mock_instance.params = module_args
@@ -120,7 +120,7 @@ class TestDiodeDryRunExecution:
             mock_instance.fail_json.side_effect = SystemExit(1)
 
             with pytest.raises(SystemExit):
-                from ansible_collections.netboxlabs.diode.plugins.modules import (
+                from ansible_collections.my0373.diode.plugins.modules import (
                     diode_dry_run,
                 )
                 diode_dry_run.main()
@@ -129,11 +129,11 @@ class TestDiodeDryRunExecution:
 
     def test_fails_when_sdk_missing(self, module_args):
         with patch(
-            "ansible_collections.netboxlabs.diode.plugins.modules.diode_dry_run.HAS_DIODE_SDK",
+            "ansible_collections.my0373.diode.plugins.modules.diode_dry_run.HAS_DIODE_SDK",
             False,
         ):
             with patch(
-                "ansible_collections.netboxlabs.diode.plugins.modules.diode_dry_run.AnsibleModule"
+                "ansible_collections.my0373.diode.plugins.modules.diode_dry_run.AnsibleModule"
             ) as MockAM:
                 mock_instance = MagicMock()
                 mock_instance.params = module_args
@@ -142,7 +142,7 @@ class TestDiodeDryRunExecution:
                 mock_instance.fail_json.side_effect = SystemExit(1)
 
                 with pytest.raises(SystemExit):
-                    from ansible_collections.netboxlabs.diode.plugins.modules import (
+                    from ansible_collections.my0373.diode.plugins.modules import (
                         diode_dry_run,
                     )
                     diode_dry_run.main()

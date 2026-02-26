@@ -6,7 +6,7 @@
   register: temp_dir
 
 - name: Test dry run with output directory (check mode)
-  netboxlabs.diode.diode_dry_run:
+  my0373.diode.diode_dry_run:
     app_name: "integration_test"
     output_dir: "{{ temp_dir.path }}"
     entities:
@@ -32,7 +32,7 @@
     fail_msg: "Dry run check mode failed"
 
 - name: Test dry run with metadata (check mode)
-  netboxlabs.diode.diode_dry_run:
+  my0373.diode.diode_dry_run:
     app_name: "metadata_test"
     output_dir: "{{ temp_dir.path }}"
     entities:

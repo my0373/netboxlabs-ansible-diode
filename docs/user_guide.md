@@ -1,6 +1,6 @@
 # User Guide
 
-Complete reference for the `netboxlabs.diode` Ansible collection.
+Complete reference for the `my0373.diode` Ansible collection.
 
 ## Table of Contents
 
@@ -55,7 +55,7 @@ Ingest one or more entities into NetBox via the Diode gRPC service. This is the 
 
 ```yaml
 - name: Ingest network infrastructure
-  netboxlabs.diode.diode_ingest:
+  my0373.diode.diode_ingest:
     target: "grpcs://diode.example.com/diode"
     app_name: "ansible-netbox"
     client_id: "{{ vault_client_id }}"
@@ -104,7 +104,7 @@ Generate JSON files representing what *would* be ingested without connecting to 
 
 ```yaml
 - name: Preview entities before ingesting
-  netboxlabs.diode.diode_dry_run:
+  my0373.diode.diode_dry_run:
     app_name: "audit"
     output_dir: "/tmp/diode-preview"
     entities:
@@ -148,7 +148,7 @@ Replay one or more dry-run JSON files into a live Diode instance. This enables a
 
 ```yaml
 - name: Apply approved dry-run files
-  netboxlabs.diode.diode_replay:
+  my0373.diode.diode_replay:
     target: "grpcs://diode.example.com/diode"
     app_name: "ansible-replay"
     files:
@@ -171,7 +171,7 @@ Return information about the installed Diode SDK. Takes no parameters and makes 
 **Example:**
 
 ```yaml
-- netboxlabs.diode.diode_info:
+- my0373.diode.diode_info:
   register: info
 
 - ansible.builtin.debug:
@@ -296,7 +296,7 @@ Diode uses OAuth2 for authentication. Provide credentials either as module param
 ### Module parameters
 
 ```yaml
-- netboxlabs.diode.diode_ingest:
+- my0373.diode.diode_ingest:
     target: "grpcs://diode.example.com/diode"
     app_name: "my-app"
     client_id: "{{ vault_diode_client_id }}"
@@ -327,7 +327,7 @@ TLS is controlled by the target URL scheme:
 ### Custom CA certificate
 
 ```yaml
-- netboxlabs.diode.diode_ingest:
+- my0373.diode.diode_ingest:
     target: "grpcs://diode.internal.com/diode"
     cert_file: "/etc/ssl/certs/diode-ca.pem"
     ...
@@ -336,7 +336,7 @@ TLS is controlled by the target URL scheme:
 ### Skip verification (not recommended for production)
 
 ```yaml
-- netboxlabs.diode.diode_ingest:
+- my0373.diode.diode_ingest:
     target: "grpcs://diode.internal.com/diode"
     skip_tls_verify: true
     ...
@@ -349,7 +349,7 @@ TLS is controlled by the target URL scheme:
 When ingesting large numbers of entities, the collection automatically splits them into chunks to stay within gRPC message size limits. The default chunk size is 3 MB.
 
 ```yaml
-- netboxlabs.diode.diode_ingest:
+- my0373.diode.diode_ingest:
     target: "grpcs://diode.example.com/diode"
     app_name: "bulk-import"
     chunk_size_mb: 2.0    # adjust if needed
@@ -380,7 +380,7 @@ ansible-playbook site.yml --check
 The simplest pattern: ingest entities directly.
 
 ```yaml
-- netboxlabs.diode.diode_ingest:
+- my0373.diode.diode_ingest:
     target: "{{ diode_target }}"
     app_name: "direct-import"
     entities:
@@ -396,7 +396,7 @@ A two-phase workflow for reviewing changes before applying them.
 
 ```yaml
 # Phase 1: Generate preview
-- netboxlabs.diode.diode_dry_run:
+- my0373.diode.diode_dry_run:
     app_name: "audit"
     output_dir: "/tmp/diode-audit"
     entities:
@@ -409,7 +409,7 @@ A two-phase workflow for reviewing changes before applying them.
 # Phase 2: Review /tmp/diode-audit/*.json manually
 
 # Phase 3: Apply
-- netboxlabs.diode.diode_replay:
+- my0373.diode.diode_replay:
     target: "{{ diode_target }}"
     app_name: "audit-apply"
     files:
@@ -428,7 +428,7 @@ vars:
     - { name: "ORD-DC1", status: "planned" }
 
 tasks:
-  - netboxlabs.diode.diode_ingest:
+  - my0373.diode.diode_ingest:
       target: "{{ diode_target }}"
       app_name: "bulk-import"
       entities: "{{ sites | map('combine', {}) | map('dict2items') | map('items2dict') | zip(sites | map('extract', {}, default='site')) | list }}"
@@ -441,7 +441,7 @@ See `playbooks/examples/bulk_ingest.yml` for a full working example.
 Attach audit metadata to any ingestion request:
 
 ```yaml
-- netboxlabs.diode.diode_ingest:
+- my0373.diode.diode_ingest:
     target: "{{ diode_target }}"
     app_name: "audit-import"
     entities: [...]

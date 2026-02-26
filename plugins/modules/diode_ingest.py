@@ -24,8 +24,8 @@ description:
     size limits.
   - NetBox handles deduplication on the server side.
 extends_documentation_fragment:
-  - netboxlabs.diode.common.DIODE_CONNECTION
-  - netboxlabs.diode.common.ENTITIES
+  - my0373.diode.common.DIODE_CONNECTION
+  - my0373.diode.common.ENTITIES
 author:
   - Matt York (@my0373)
   - NetBox Labs
@@ -33,7 +33,7 @@ author:
 
 EXAMPLES = r"""
 - name: Ingest a single device
-  netboxlabs.diode.diode_ingest:
+  my0373.diode.diode_ingest:
     target: "grpc://diode.example.com:8080/diode"
     app_name: "ansible-netbox"
     app_version: "1.0.0"
@@ -51,7 +51,7 @@ EXAMPLES = r"""
             - production
 
 - name: Ingest multiple entity types in one call
-  netboxlabs.diode.diode_ingest:
+  my0373.diode.diode_ingest:
     target: "grpc://diode.example.com:8080/diode"
     app_name: "ansible-netbox"
     app_version: "1.0.0"
@@ -78,7 +78,7 @@ EXAMPLES = r"""
       batch_id: "deploy-001"
 
 - name: Ingest using string shorthand for simple entities
-  netboxlabs.diode.diode_ingest:
+  my0373.diode.diode_ingest:
     target: "grpc://diode.example.com:8080/diode"
     app_name: "ansible-netbox"
     entities:
@@ -114,11 +114,11 @@ errors:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.netboxlabs.diode.plugins.module_utils.arg_specs import (
+from ansible_collections.my0373.diode.plugins.module_utils.arg_specs import (
     diode_connection_arg_spec,
     diode_entities_arg_spec,
 )
-from ansible_collections.netboxlabs.diode.plugins.module_utils.diode_module import (
+from ansible_collections.my0373.diode.plugins.module_utils.diode_module import (
     DiodeModule,
 )
 
