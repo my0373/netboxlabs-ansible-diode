@@ -15,6 +15,11 @@
 - [ ] Documentation update
 - [ ] CI/build/tooling improvement
 
+## Target Branch
+
+- [ ] This PR targets `develop` (features and fixes)
+- [ ] This PR targets `main` (release merge from `develop` only)
+
 ## Checklist
 
 - [ ] I have read the [CONTRIBUTING](CONTRIBUTING.md) guide

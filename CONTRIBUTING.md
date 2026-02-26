@@ -146,13 +146,34 @@ make test-all      # everything
 
 See the [Testing Guide](docs/testing.md) for full details.
 
+## Branching Strategy
+
+This project uses a two-branch model:
+
+| Branch | Purpose |
+|--------|---------|
+| `main` | Stable, release-ready code. Tagged releases are cut from here. |
+| `develop` | Integration branch. All feature/fix PRs target this branch. |
+
+The typical flow is:
+
+1. Create a feature branch from `develop`.
+2. Open a PR against `develop`.
+3. Once CI passes and the PR is approved, merge into `develop`.
+4. When `develop` is ready for release, a maintainer opens a PR from
+   `develop` into `main`.
+5. After merging to `main`, tag the release (see [Releasing](docs/releasing.md)).
+
+Both `main` and `develop` are protected branches — direct pushes are
+blocked and all changes must go through a pull request with passing CI.
+
 ## Pull Request Workflow
 
-1. **Fork** the repository and create a feature branch from `main`.
+1. **Fork** the repository and create a feature branch from `develop`.
 2. **Make your changes** following the patterns described above.
 3. **Add tests** for any new functionality.
 4. **Run the full test suite** (`make test-all`) and ensure it passes.
-5. **Open a pull request** against `main` with a clear description of what changed and why.
+5. **Open a pull request** against `develop` with a clear description of what changed and why.
 
 ### PR checklist
 
