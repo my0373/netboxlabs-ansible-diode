@@ -1,1 +1,1 @@
-netboxlabs-diode-sdk>=1.10.0,<2.0.0
+netboxlabs-diode-sdk>=1.12.0,<2.0.0
